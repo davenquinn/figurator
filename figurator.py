@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 #-*- coding: utf8 -*-
 
+from __future__ import print_function
 import yaml
 import pypandoc
 from shutil import copyfile
 from os import path, symlink
 from collections import OrderedDict
 from jinja2 import Environment, FileSystemLoader
+from click import echo, secho, style
 
 def pandoc_processor(text):
     """
@@ -108,6 +110,9 @@ def update_filenames(spec, outdir):
             cfg['file'] = collected_filename(cfg, outdir)
         yield cfg
 
+_file = lambda x: style(x, fg='cyan')
+_bullet = lambda c: style("●",fg=c)
+
 def collect_figures(spec, outdir, search_paths=[], copy=False):
     """
     Collects figures into a specific directory
@@ -118,20 +123,33 @@ def collect_figures(spec, outdir, search_paths=[], copy=False):
     """
     spec = __load_spec(spec)
 
+    def __find_file(f):
+        for p in search_paths:
+            fn = path.join(p,f)
+            if path.isfile(fn):
+                return fn
+        return None
+
     for cfg in spec:
         if not 'file' in cfg:
             continue # No file to be had
 
-        for p in search_paths:
-            fn = path.join(p,cfg['file'])
-            if path.isfile(fn):
-                break # We found our filename!
+        fn = __find_file(cfg['file'])
+        if fn is None:
+            echo(_bullet('red')+" Couldn't find file "+_file(cfg['file']))
+            continue
 
         new_fn = collected_filename(cfg,outdir)
         if copy:
             copyfile(fn,new_fn)
         else:
             symlink(fn,new_fn)
+
+        # Report progress
+        mode = "Copied" if copy else "Symlinked"
+        echo(_bullet('green')+" "+mode+" "+_file(fn))
+        pad = " "*len(mode)
+        echo(pad+"to "+_file(new_fn))
 
 ### Process includes ###
 
