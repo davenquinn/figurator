@@ -1,0 +1,25 @@
+\begin{<< env  >>}
+  \centering
+  <# if sideways #>
+  \begin{adjustbox}{angle=90}
+  <# endif #>
+  \begin{threeparttable}
+    \caption{<<caption >>}
+    <<content >>
+    <# if notes #>
+    \begin{tablenotes}
+      <# for k,note in notes.iteritems() #>
+      <# if k != "" #>
+      \item [<<k>>] <<note>>
+      <# else #>
+      <<note>>
+      <# endif #>
+      <# endfor #>
+    \end{tablenotes}
+    <# endif #>
+  \end{threeparttable}
+  <# if sideways #>
+  \end{adjustbox}
+  <# endif #>
+  \label{tab:<<label >>}
+\end{<< env  >>}
