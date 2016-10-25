@@ -48,7 +48,7 @@ def load_spec(spec):
     with open(spec) as f:
         return yaml.load(f.read())
 
-def update_defaults(item):
+def update_defaults(item, **kwargs):
     """
     Updates passed configuration for figures and
     tables with default values
@@ -61,12 +61,19 @@ def update_defaults(item):
         sideways=False,
         caption="")
     __.update(**item)
-    star = "*" if __["two_column"] else ""
 
     if __['two_column']:
         __['width'] = '42pc'
 
-    __["env"] = __["type"] + star
+    __["env"] = __["type"]
+
+    # Add stars to two_column floats
+    # `True` by default
+    # (this is useful for two-column layouts)
+    if kwargs.pop("starred_floats",True):
+        if __["two_column"]:
+            __["env"] += star
+
     return __
 
 def make_figure(data):
@@ -157,12 +164,13 @@ methods = dict(
     figure=make_figure,
     table=make_table)
 
-def process_includes(spec, collect_dir=None):
+def process_includes(spec, **kwargs):
     spec = load_spec(spec)
     # We modify filenames if invoked with `collect_dir`
+    collect_dir = kwargs.pop('collect_dir',None)
     if collect_dir is not None:
         spec = update_filenames(spec, collect_dir)
     for item in spec:
-        cfg = update_defaults(item)
+        cfg = update_defaults(item, **kwargs)
         yield methods[cfg['type']](cfg)
 
