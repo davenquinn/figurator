@@ -38,7 +38,7 @@ tex_renderer = Environment(
     comment_end_string = '=>',
     loader = FileSystemLoader(dirs))
 
-def __load_spec(spec):
+def load_spec(spec):
     """
     Load spec from YAML or simply pass it through
     unaltered if it is already a list of mappings
@@ -121,7 +121,7 @@ def collect_figures(spec, outdir, search_paths=[], copy=False):
     outdir: directory in which to collect figures
     search_paths: dirs in which to search for figures matching filenames
     """
-    spec = __load_spec(spec)
+    spec = load_spec(spec)
 
     def __find_file(f):
         for p in search_paths:
@@ -158,7 +158,7 @@ methods = dict(
     table=make_table)
 
 def process_includes(spec, collect_dir=None):
-    spec = __load_spec(spec)
+    spec = load_spec(spec)
     # We modify filenames if invoked with `collect_dir`
     if collect_dir is not None:
         spec = update_filenames(spec, collect_dir)
