@@ -129,9 +129,9 @@ def collect_figures(spec, outdir, search_paths=[], copy=False):
 
         new_fn = collected_filename(cfg,outdir)
         if copy:
-            copyfile(fn,newpath)
+            copyfile(fn,new_fn)
         else:
-            symlink(fn,newpath)
+            symlink(fn,new_fn)
 
 ### Process includes ###
 
