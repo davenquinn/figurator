@@ -10,6 +10,8 @@ from collections import OrderedDict
 from jinja2 import Environment, FileSystemLoader
 from click import echo, secho, style
 
+from .captions import integrate_captions
+
 def pandoc_processor(text):
     """
     Parse snippets of text as Pandoc for inclusion in
@@ -38,15 +40,24 @@ tex_renderer = Environment(
     comment_end_string = '=>',
     loader = FileSystemLoader(dirs))
 
-def load_spec(spec):
+def load_spec(spec, captions=None):
     """
     Load spec from YAML or simply pass it through
     unaltered if it is already a list of mappings
+
+    kwargs:
+      captions  pass in a separate filename (or object) of pandoc
+                markdown containing figure captions
     """
-    if isinstance(spec[0], dict):
-        return spec
-    with open(spec) as f:
-        return yaml.load(f.read())
+    try:
+        with open(spec) as f:
+            spec = yaml.load(f.read())
+    except TypeError:
+        pass
+
+    if captions is not None:
+        spec = list(integrate_captions(spec, captions))
+    return spec
 
 def update_defaults(item, **kwargs):
     """
@@ -165,7 +176,8 @@ methods = dict(
     table=make_table)
 
 def process_includes(spec, **kwargs):
-    spec = load_spec(spec)
+    spec = load_spec(spec,
+        captions=kwargs.pop('captions', None))
     # We modify filenames if invoked with `collect_dir`
     collect_dir = kwargs.pop('collect_dir',None)
     if collect_dir is not None:
