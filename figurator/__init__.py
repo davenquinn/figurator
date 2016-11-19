@@ -87,14 +87,14 @@ def update_defaults(item, **kwargs):
 
     return __
 
-def make_figure(data):
+def make_figure(data, template="figure.tex"):
     if data['caption'] != "":
         data['caption'] = pandoc_processor(data["caption"])
 
-    fig = tex_renderer.get_template("figure.tex")
+    fig = tex_renderer.get_template(template)
     return fig.render(**data)
 
-def make_table(data):
+def make_table(data, template="table.tex"):
     data["caption"] = pandoc_processor(data["caption"])
 
     # Add table notes if defined
@@ -108,7 +108,7 @@ def make_table(data):
     except:
         data["content"] = "Cannot find table file"
 
-    table = tex_renderer.get_template("table.tex")
+    table = tex_renderer.get_template(template)
     return table.render(**data)
 
 ### Collection of figures ###
