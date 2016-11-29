@@ -95,7 +95,8 @@ def make_figure(data, template="figure.tex"):
     return fig.render(**data)
 
 def make_table(data, template="table.tex"):
-    data["caption"] = pandoc_processor(data["caption"])
+    if data['caption'] != "":
+        data['caption'] = pandoc_processor(data["caption"])
 
     # Add table notes if defined
     if 'notes' in data:
