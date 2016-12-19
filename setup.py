@@ -4,7 +4,8 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 install_requires = [
     'jinja2',
-    'pypandoc'
+    'pypandoc',
+    'click'
     ]
 
 setup(
@@ -15,4 +16,9 @@ setup(
     install_requires=install_requires,
     include_package_data=True,
     zip_safe=True,
+    entry_points="""
+        [console_scripts]
+        collect-figures=figurator.cli:collect
+        figure-list=figurator.cli:figure_list
+    """
 )

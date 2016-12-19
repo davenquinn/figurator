@@ -1,0 +1,15 @@
+\subsection{Figure \ref{fig:<< id >>}<#- if title #>: \GothamLight{<< title >>}<#- endif #>\hfill%
+  \color{light-gray}\HaskligLight{fig:<< id >>}}
+\noindent\includegraphics[width=<< width >>
+  <#- if scale #>,scale=<< scale >><# endif -#>
+]{<< file >>}
+<# if caption -#>
+\captionof{figure}[<<title>>]{<< caption >>}
+<#- else -#>
+\captionlistentry[figure]{<< title >>}
+<#- endif #>\label{fig:<< id >>}
+<#- if desc #>
+\nopagebreak
+\begin{figinfo}<< desc >>\end{figinfo}
+<# endif #>
+\vspace{20pt}

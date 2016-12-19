@@ -83,7 +83,7 @@ def update_defaults(item, **kwargs):
     # (this is useful for two-column layouts)
     if kwargs.pop("starred_floats",True):
         if __["two_column"]:
-            __["env"] += star
+            __["env"] += "*"
 
     return __
 
@@ -185,5 +185,5 @@ def process_includes(spec, **kwargs):
         spec = update_filenames(spec, collect_dir)
     for item in spec:
         cfg = update_defaults(item, **kwargs)
-        yield methods[cfg['type']](cfg)
+        yield cfg["id"], methods[cfg['type']](cfg)
 

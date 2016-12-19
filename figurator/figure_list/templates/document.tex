@@ -1,0 +1,69 @@
+\documentclass[letterpaper,12pt]{article}
+
+\usepackage[paper=letterpaper, margin=1in, nohead, pdftex]{geometry}
+\usepackage{fontspec}
+\usepackage{textcomp}
+\usepackage{ifthen}
+\usepackage[small,compact]{titlesec}
+\usepackage{titling}
+\usepackage{graphicx}			% Nice graphics, optional
+\usepackage{siunitx}
+\usepackage[version=3]{mhchem}
+\usepackage{fancyhdr}
+\usepackage{wrapfig}
+\usepackage{ifthen}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage[norule,bottom]{footmisc}
+\usepackage{paralist}
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{array,booktabs}
+\usepackage{setspace}
+\usepackage{natbib}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage[justification=justified,singlelinecheck=false,skip=0pt]{caption}
+
+\input{tex/includes/fonts.tex}
+
+\floatplacement{figure}{H}
+
+\defaultfontfeatures{Ligatures=TeX}
+\setsansfont{Gotham Book}
+\setmainfont{Chaparral Pro}
+
+\setcounter{secnumdepth}{-1}
+
+\renewcommand{\maketitlehooka}{\Gotham}
+\titleformat{\section}{\Gotham\large\bfseries}{\thesection}{}{}
+\titleformat{\subsection}{\Gotham\normalsize\bfseries}{\thesubsection}{}{}
+
+\titlespacing*{\subsection}{0pt}{5.5ex plus 1ex minus .2ex}{0ex}
+
+% List figure IDs
+\definecolor{light-gray}{gray}{0.6}
+\newtcolorbox{figinfo}{%
+    colback=red!3!white,%
+    colframe=red!50!white}
+
+\newtcbox{\code}{nobeforeafter,colframe=light-gray,colback=light-gray!10!white,boxrule=0.5pt,arc=4pt,
+  boxsep=0pt,left=3pt,right=3pt,top=3pt,bottom=3pt,tcbox raise base}
+
+\title{Syrtis Major Figures}
+\author{Daven Quinn}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\listoffigures
+
+\input{build/figure-list.tex}
+
+\bibliographystyle{/users/daven/resources/papers/bibtex/styles/agu08}
+\bibliography{/users/daven/resources/papers/bibtex/library}
+
+\end{document}
