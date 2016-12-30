@@ -27,18 +27,19 @@ templates = path.join(__dirname,"templates")
 # resorting to module's templates directory
 # TODO: create a configurable template directory
 #       which should help with generalization
-dirs = [
-    'templates',
-    path.join(__dirname,'templates')]
+def create_tex_renderer(templates_dir):
+    dirs = [
+        'templates',
+        templates_dir]
 
-tex_renderer = Environment(
-    block_start_string = '<#',
-    block_end_string = '#>',
-    variable_start_string = '<<',
-    variable_end_string = '>>',
-    comment_start_string = '<=',
-    comment_end_string = '=>',
-    loader = FileSystemLoader(dirs))
+    return Environment(
+        block_start_string = '<#',
+        block_end_string = '#>',
+        variable_start_string = '<<',
+        variable_end_string = '>>',
+        comment_start_string = '<=',
+        comment_end_string = '=>',
+        loader = FileSystemLoader(dirs))
 
 def load_spec(spec, captions=None):
     """
@@ -87,14 +88,15 @@ def update_defaults(item, **kwargs):
 
     return __
 
-def make_figure(data, template="figure.tex"):
+def make_figure(data, template="figure.tex", template_dir=templates):
     if data['caption'] != "":
         data['caption'] = pandoc_processor(data["caption"])
 
+    tex_renderer = create_tex_renderer(template_dir)
     fig = tex_renderer.get_template(template)
     return fig.render(**data)
 
-def make_table(data, template="table.tex"):
+def make_table(data, template="table.tex", template_dir=templates):
     if data['caption'] != "":
         data['caption'] = pandoc_processor(data["caption"])
 
@@ -108,7 +110,7 @@ def make_table(data, template="table.tex"):
             data["content"] = f.read()
     except:
         data["content"] = "Cannot find table file"
-
+    tex_renderer = create_tex_renderer(template_dir)
     table = tex_renderer.get_template(template)
     return table.render(**data)
 
@@ -181,9 +183,11 @@ def process_includes(spec, **kwargs):
         captions=kwargs.pop('captions', None))
     # We modify filenames if invoked with `collect_dir`
     collect_dir = kwargs.pop('collect_dir',None)
+    template_dir = kwargs.pop('template_dir',templates)
     if collect_dir is not None:
         spec = update_filenames(spec, collect_dir)
     for item in spec:
         cfg = update_defaults(item, **kwargs)
-        yield cfg["id"], methods[cfg['type']](cfg)
+        yield cfg["id"], methods[cfg['type']](cfg,
+            template_dir=template_dir)
 

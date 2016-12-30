@@ -1,0 +1,33 @@
+\subsection{Table \ref{tab:<< id >>}<#- if title #>: \GothamLight{<< title >>}<#- endif #>\hfill%
+  \color{light-gray}\HaskligLight{tab:<< id >>}}
+
+<# if sideways #>
+\begin{adjustbox}{angle=90}
+<# endif #>
+\begin{threeparttable}
+  <# if caption -#>
+  \captionof{table}[<<title>>]{<< caption >>}
+  <#- else -#>
+  \captionlistentry[table]{<< title >>}
+  <#- endif #>\label{tab:<< id >>}
+  <<content >>
+  <# if notes -#>
+  \begin{tablenotes}
+    <# for k,note in notes.iteritems() #>
+    <# if k != "" #>
+    \item [<<k>>] <<note>>
+    <# else #>
+    <<note>>
+    <# endif #>
+    <# endfor #>
+  \end{tablenotes}
+  <#- endif #>
+\end{threeparttable}
+<# if sideways -#>\end{adjustbox}<#- endif #>
+<#- if desc #>
+\nopagebreak
+\begin{figinfo}<< desc >>\end{figinfo}
+<# endif #>
+\vspace{20pt}
+
+
