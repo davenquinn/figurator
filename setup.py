@@ -18,7 +18,6 @@ setup(
     zip_safe=True,
     entry_points="""
         [console_scripts]
-        collect-figures=figurator.cli:collect
-        figure-list=figurator.cli:figure_list
+        figures=figurator.cli:figures
     """
 )
