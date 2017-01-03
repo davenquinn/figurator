@@ -10,12 +10,12 @@ figures = click.Group()
 
 @figures.command(name='collect')
 @click.argument('defs', type=_path)
-@click.argument('outdir', type=_path)
+@click.argument('collect_dir', type=_path)
 @click.argument('search_dirs', type=_path, nargs=-1)
 @click.option('--copy', is_flag=True, default=False)
-def collect(defs, outdir, search_dirs, copy=False):
+def collect(defs, collect_dir, search_dirs, copy=False):
     collect_figures(
-        defs, outdir,
+        defs, collect_dir,
         search_dirs,
         copy=copy)
 
