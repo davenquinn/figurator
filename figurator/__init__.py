@@ -179,6 +179,11 @@ methods = dict(
     table=make_table)
 
 def process_includes(spec, **kwargs):
+    """
+    If invoked with `collect_dir` kwarg, we modify filenames to
+    point to collected file. If not, filename points to original
+    location
+    """
     spec = load_spec(spec,
         captions=kwargs.pop('captions', None))
     # We modify filenames if invoked with `collect_dir`
