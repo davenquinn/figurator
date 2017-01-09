@@ -30,13 +30,14 @@ def figure_list(defs, captions=None, collect_dir=None):
 @click.argument('defs', type=_path)
 @click.option('--captions',type=_path)
 @click.option('--collect-dir',type=_path)
-def figure_list(defs, captions=None, collect_dir=None):
+@click.option('--template-dir',type=_path)
+def figure_list(defs, captions=None, collect_dir=None, template_dir=None):
     """
     A text filter to include inline figures in pandoc markdown
     Pipe text through this filter then into pandoc
     """
     stdin = click.get_text_stream('stdin')
     stdout = click.get_text_stream('stdout')
-    fn = inline_figure_filter(defs, captions, collect_dir)
+    fn = inline_figure_filter(defs, captions, collect_dir, template_dir=template_dir)
     text = stdin.read()
     stdout.write(fn(text))

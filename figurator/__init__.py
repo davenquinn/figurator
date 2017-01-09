@@ -32,7 +32,7 @@ def create_tex_renderer(templates_dir):
         'templates',
         templates_dir]
 
-    return Environment(
+    e = Environment(
         block_start_string = '<#',
         block_end_string = '#>',
         variable_start_string = '<<',
@@ -40,6 +40,9 @@ def create_tex_renderer(templates_dir):
         comment_start_string = '<=',
         comment_end_string = '=>',
         loader = FileSystemLoader(dirs))
+
+    e.filters['escape_filename'] = lambda x: x.replace(" ","\ ")
+    return e
 
 def load_spec(spec, captions=None):
     """
@@ -72,10 +75,11 @@ def update_defaults(item, **kwargs):
         width='20pc',
         sideways=False,
         caption="")
-    __.update(**item)
 
     if __['two_column']:
         __['width'] = '42pc'
+
+    __.update(**item)
 
     __["env"] = __["type"]
 
@@ -91,6 +95,11 @@ def update_defaults(item, **kwargs):
 def make_figure(data, template="figure.tex", template_dir=templates):
     if data['caption'] != "":
         data['caption'] = pandoc_processor(data["caption"])
+
+    # allow overriding of template from figure defs
+    tmp = data.pop('template',None)
+    if tmp is not None:
+        template = tmp+'.tex'
 
     tex_renderer = create_tex_renderer(template_dir)
     fig = tex_renderer.get_template(template)
@@ -184,8 +193,10 @@ def process_includes(spec, **kwargs):
     # We modify filenames if invoked with `collect_dir`
     collect_dir = kwargs.pop('collect_dir',None)
     template_dir = kwargs.pop('template_dir',templates)
+
     if collect_dir is not None:
         spec = update_filenames(spec, collect_dir)
+
     for item in spec:
         cfg = update_defaults(item, **kwargs)
         yield cfg["id"], methods[cfg['type']](cfg,
