@@ -1,0 +1,24 @@
+- id: overview-map
+  file: overview-map.pdf
+  caption: >
+    Regional overview of layered sulfates assembled from morphology, mineralogy, and
+    thermal inertia. The study area is centered on *75ºE, 15ºN*.
+- id: nf6-bedding
+  file: nf6-bedding.pdf
+  template: full_width
+  caption: >
+    Bedding orientations (95% CI in dip--dip azimuth space, using method from [@Quinn2017MethodLPSC]) measured on HiRISE
+    stereo pair *ESP_021612_1975*/*ESP_021757_1975*. (**a**) Superposition
+    of the Syrtis Major lavas atop a slope of layered sulfates and a dipping basement
+    pediment. (**b**) Sulfates in the north part of the image dip southward beneath
+    a flat lava flow. (**c**) In the southern part of the image, layered sulfates
+    dip ~8º southwest beneath south-dipping lava flow, creating an angular unconformity.
+- id: sulfate-emplacement-history
+  file: sulfate-emplacement-history.pdf
+  caption: >
+    A model emplacement history for the layered sulfates, emphasizing the separability
+    of sedimentation, volume-loss fracturing, and fluid alteration.
+    The relative order of fracturing and lava flows is uncertain;
+    volume-loss could occur in response to, or after,
+    lava emplacement. In this alterative scenario, the panels *(2,3,4)* would be reordered *(3,2,4)*.
+
