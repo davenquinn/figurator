@@ -7,7 +7,7 @@ __dirname = path.dirname(__file__)
 templates = path.join(__dirname,"templates")
 pattern = re.compile("<!--\[\[(.+)\]\]-->")
 
-def inline_figure_filter(defs, captions=None, collect_dir=None, template_dir=None):
+def inline_figure_filter(defs, captions=None, collect_dir=None, template_dir=None, citation_backend='natbib'):
 
     spec = load_spec(defs, captions=captions)
     includes = process_includes(spec,
