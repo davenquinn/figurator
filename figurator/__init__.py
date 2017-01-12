@@ -14,13 +14,15 @@ from click import echo, secho, style
 from .filters import uncertain, nominal
 from .captions import integrate_captions
 
-def pandoc_processor(text):
+def pandoc_processor(text, citation_backend='biblatex'):
     """
     Parse snippets of text as Pandoc for inclusion in
     LaTeX templates.
     """
+    extra_args = None
+    extra_args=["--biblatex"]
     return pypandoc.convert(text, 'latex',
-            format="md", extra_args=["--natbib"])
+            format="md", extra_args=extra_args)
 
 __dirname = path.dirname(__file__)
 templates = path.join(__dirname,"templates")
@@ -84,10 +86,11 @@ def update_defaults(item, **kwargs):
         width='20pc',
         sideways=False,
         caption="")
-    __.update(**item)
 
     if __['two_column']:
         __['width'] = '42pc'
+
+    __.update(**item)
 
     __["env"] = __["type"]
 
@@ -101,17 +104,16 @@ def update_defaults(item, **kwargs):
     return __
 
 def make_figure(data, template="figure.tex", template_dir=templates):
-    if data['caption'] != "":
-        data['caption'] = pandoc_processor(data["caption"])
+    # allow overriding of template from figure defs
+    tmp = data.pop('template',None)
+    if tmp is not None:
+        template = tmp+'.tex'
 
     tex_renderer = create_tex_renderer(template_dir)
     fig = tex_renderer.get_template(template)
     return fig.render(**data)
 
 def make_table(data, template="table.tex", template_dir=templates):
-    if data['caption'] != "":
-        data['caption'] = pandoc_processor(data["caption"])
-
     # Add table notes if defined
     if 'notes' in data:
         data["notes"] = OrderedDict(sorted(data["notes"].items()))
@@ -201,10 +203,17 @@ def process_includes(spec, **kwargs):
     # We modify filenames if invoked with `collect_dir`
     collect_dir = kwargs.pop('collect_dir',None)
     template_dir = kwargs.pop('template_dir',templates)
+    citation_backend = kwargs.pop('citation_backend','natbib')
+
     if collect_dir is not None:
         spec = update_filenames(spec, collect_dir)
+
     for item in spec:
         cfg = update_defaults(item, **kwargs)
+        # Process caption
+        if cfg['caption'] != "":
+            cfg['caption'] = pandoc_processor(cfg["caption"], citation_backend=citation_backend)
+
         yield cfg["id"], methods[cfg['type']](cfg,
             template_dir=template_dir)
 

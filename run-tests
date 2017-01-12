@@ -1,0 +1,13 @@
+#!/bin/bash
+
+V=test-fixtures/lpsc-abstract
+cat $V/main.md \
+| sed -e 's/`fig:\([a-z0-9-]\+\)`/\\ref{fig:\1}/g' \
+| figures inline \
+  --biblatex \
+  --template-dir "$V/templates" \
+  --collect-dir "$V" \
+  $V/includes.yaml \
+| pandoc -t latex --biblatex \
+| sed -e 's/\\textbackslash{}/\\/g' -e 's/\\\([{}]\)/\1/g' \
+> "$V/main-compiled.tex"
