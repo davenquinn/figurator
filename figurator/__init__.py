@@ -4,12 +4,14 @@
 from __future__ import print_function
 import yaml
 import pypandoc
+import codecs
 from shutil import copyfile
 from os import path, symlink
 from collections import OrderedDict
 from jinja2 import Environment, FileSystemLoader
 from click import echo, secho, style
 
+from .filters import uncertain, nominal
 from .captions import integrate_captions
 
 def pandoc_processor(text):
@@ -23,16 +25,20 @@ def pandoc_processor(text):
 __dirname = path.dirname(__file__)
 templates = path.join(__dirname,"templates")
 
+def write_file(fn, text):
+    with codecs.open(fn,"w",encoding="utf8") as f:
+        f.write(text)
+
 # Load file from local templates directory before
 # resorting to module's templates directory
 # TODO: create a configurable template directory
 #       which should help with generalization
-def create_tex_renderer(templates_dir):
-    dirs = [
-        'templates',
-        templates_dir]
+def create_tex_renderer(templates_dir=None):
+    dirs = ['templates']
+    if templates_dir != None:
+        dirs.append(templates_dir)
 
-    return Environment(
+    renderer = Environment(
         block_start_string = '<#',
         block_end_string = '#>',
         variable_start_string = '<<',
@@ -40,6 +46,12 @@ def create_tex_renderer(templates_dir):
         comment_start_string = '<=',
         comment_end_string = '=>',
         loader = FileSystemLoader(dirs))
+
+    renderer.filters["un"] = uncertain
+    renderer.filters["n"] = nominal
+    return renderer
+
+tex_renderer = create_tex_renderer()
 
 def load_spec(spec, captions=None):
     """
