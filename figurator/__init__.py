@@ -20,7 +20,7 @@ def pandoc_processor(text, citation_backend='biblatex'):
     LaTeX templates.
     """
     extra_args = None
-    extra_args=["--biblatex"]
+    extra_args=["--"+citation_backend]
     return pypandoc.convert(text, 'latex',
             format="md", extra_args=extra_args)
 
