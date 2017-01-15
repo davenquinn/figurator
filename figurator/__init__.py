@@ -85,15 +85,15 @@ def update_defaults(item, **kwargs):
         two_column=False,
         width='20pc',
         sideways=False,
+        starred_floats=True,
         caption="")
-
-    if __['two_column']:
-        __['width'] = '42pc'
 
     __.update(**item)
 
     __["env"] = __["type"]
 
+    if __['two_column']:
+        __['width'] = '42pc'
     # Add stars to two_column floats
     # `True` by default
     # (this is useful for two-column layouts)
