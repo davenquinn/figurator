@@ -24,8 +24,8 @@ def collect(defs, collect_dir, search_dirs, copy=False):
 def standard_interface(f):
     @click.argument('defs', type=_path)
     @click.option('--captions',type=_path)
-    @click.option('--collect-dir',type=_path)
-    @click.option('--template-dir',type=_path)
+    @click.option('--collect-dir',type=_path, help="Directory in which figure files can be found by ID")
+    @click.option('--template-dir',type=_path, help="Directory containing templates")
     @click.option('--starred-floats/--no-starred-floats', default=True)
     @click.option('--natbib','backend',flag_value='natbib', default=True)
     @click.option('--biblatex', 'backend',flag_value='biblatex')
