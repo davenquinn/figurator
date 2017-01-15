@@ -31,19 +31,19 @@ def collect(defs, collect_dir, search_dirs, copy=False):
 @figures.command(name='list')
 @template_dir("figure-list")
 @standard_interface
-def figure_list(ctx, defs, **kwargs):
-    latex_figure_list(defs, **kwargs)
+def figure_list(ctx, defs, includes):
+    latex_figure_list(defs, includes)
 
 @figures.command(name='inline')
 @template_dir("generic")
 @standard_interface
-def inline_figures(ctx, defs, **kwargs):
+def inline_figures(ctx, defs, includes):
     """
     A text filter to include inline figures in pandoc markdown
     Pipe text through this filter then into pandoc
     """
     stdin = click.get_text_stream('stdin')
     stdout = click.get_text_stream('stdout')
-    fn = inline_figure_filter(defs, **kwargs)
+    fn = inline_figure_filter(defs, includes)
     text = stdin.read()
     stdout.write(fn(text))

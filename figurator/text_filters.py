@@ -2,13 +2,10 @@ from __future__ import print_function
 from os import path
 import re
 import pypandoc
-from .interface import load_spec
-from .processors import process_includes
 
 pattern = re.compile("<!--\[\[(.+)\]\]-->")
 
-def inline_figure_filter(spec, **kwargs):
-    includes = process_includes(spec, **kwargs)
+def inline_figure_filter(spec, includes):
 
     items = {l:d for l,d in includes}
     def fn(matchobj):
@@ -22,11 +19,10 @@ def inline_figure_filter(spec, **kwargs):
         return pattern.sub(fn,text)
     return match_function
 
-def latex_figure_list(ctx, spec, **kwargs):
+def latex_figure_list(spec, includes, **kwargs):
     """
     Generates a list of figures and descriptions that can
     be piped to pandoc and/or latex
     """
-    __ = process_includes(spec, **kwargs)
-    for cfg, (id,item) in zip(spec,__):
+    for cfg, (id,item) in zip(spec,includes):
         print(item)

@@ -2,25 +2,9 @@
 from shutil import copyfile
 from os import path, symlink
 from click import echo, secho, style
-from .interface import load_spec
+from .processors import load_spec, collected_filename
 
 ### Collection of figures ###
-
-def collected_filename(cfg, collect_dir):
-    """
-    Update filenames to point to files
-    collected by the figure-collection
-    function
-    """
-    ext = path.splitext(cfg['file'])[1]
-    return path.join(collect_dir, cfg['id']+ext)
-
-def update_filenames(spec, outdir):
-    for cfg in spec:
-        if 'file' in cfg:
-            cfg['file'] = collected_filename(cfg, outdir)
-        yield cfg
-
 _file = lambda x: style(x, fg='cyan')
 _bullet = lambda c: style("●",fg=c)
 

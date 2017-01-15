@@ -1,14 +1,47 @@
 from __future__ import print_function
 import codecs
+import yaml
 from os import path
 from click import pass_context
 from .captions import integrate_captions
-from .interface import load_spec
-from .collect import update_filenames
+
+def collected_filename(cfg, collect_dir):
+    """
+    Update filenames to point to files
+    collected by the figure-collection
+    function
+    """
+    ext = path.splitext(cfg['file'])[1]
+    return path.join(collect_dir, cfg['id']+ext)
+
+def update_filenames(spec, outdir):
+    for cfg in spec:
+        if 'file' in cfg:
+            cfg['file'] = collected_filename(cfg, outdir)
+        yield cfg
 
 def write_file(fn, text):
     with codecs.open(fn,"w",encoding="utf8") as f:
         f.write(text)
+
+def load_spec(spec, captions=None):
+    """
+    Load spec from YAML or simply pass it through
+    unaltered if it is already a list of mappings
+
+    kwargs:
+      captions  pass in a separate filename (or object) of pandoc
+                markdown containing figure captions
+    """
+    try:
+        with open(spec) as f:
+            spec = yaml.load(f.read())
+    except TypeError:
+        pass
+
+    if captions is not None:
+        spec = list(integrate_captions(spec, captions))
+    return spec
 
 def update_defaults(item, **kwargs):
     """
