@@ -2,7 +2,10 @@ from __future__ import print_function
 import click, re
 from os import path
 from .collect import collect_figures
-from .text_filters import inline_figure_filter, latex_figure_list
+from .text_filters import (
+    inline_figure_filter,
+    latex_figure_list,
+    figure_id_filter)
 from .interface import standard_interface, _path
 
 # Setup default template directories
@@ -45,5 +48,5 @@ def inline_figures(ctx, defs, includes):
     stdin = click.get_text_stream('stdin')
     stdout = click.get_text_stream('stdout')
     fn = inline_figure_filter(defs, includes)
-    text = stdin.read()
+    text = figure_id_filter(stdin.read())
     stdout.write(fn(text))
