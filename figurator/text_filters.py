@@ -1,8 +1,6 @@
 from __future__ import print_function
 from os import path
 import re
-import pypandoc
-
 
 def inline_figure_filter(spec, includes):
     pattern = re.compile("<!--\[\[(.+)\]\]-->")

@@ -1,10 +1,17 @@
 from click import argument, option, pass_context, Path
-from functools import update_wrapper
+from functools import update_wrapper, partial
 from pypandoc import convert
 from .tex_renderer import TexRenderer
 from .processors import load_spec, process_includes
 
 _path = Path(exists=True)
+
+def pandoc_processor(text, citation_backend=None):
+    extra_args = []
+    if citation_backend is not None:
+        extra_args.append("--"+citation_backend)
+    return convert(text, 'latex', format='md',
+        extra_args=extra_args)
 
 def standard_interface(f):
     @argument('defs', type=_path)
@@ -21,11 +28,9 @@ def standard_interface(f):
             captions=kwargs.pop('captions', None))
 
         # Create a global pandoc processor
-        cb = kwargs.pop('citation_backend')
-        def fn(text):
-            return convert(text, 'latex',
-                format="md", extra_args=["--"+cb])
-        ctx.pandoc_processor = fn
+        ctx.pandoc_processor = partial(
+            pandoc_processor,
+            citation_backend=kwargs.pop('citation_backend'))
 
         template_dir = kwargs.pop('template_dir')
         ctx.tex_renderer = TexRenderer(*template_dir)

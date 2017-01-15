@@ -4,6 +4,7 @@ import yaml
 from os import path
 from click import pass_context
 from .captions import integrate_captions
+from .text_filters import figure_id_filter
 
 def collected_filename(cfg, collect_dir):
     """
@@ -92,7 +93,10 @@ def process_includes(ctx, spec, **kwargs):
         cfg = update_defaults(item, **kwargs)
         # Process caption
         if cfg['caption'] != "":
-            cfg['caption'] = ctx.pandoc_processor(cfg["caption"])
+            cfg['caption'] = ctx.pandoc_processor(
+                # This is pretty ugly, come up with a
+                # better system
+                figure_id_filter(cfg["caption"]))
 
         method = getattr(ctx.tex_renderer,"make_"+cfg['type'])
         yield cfg["id"], method(cfg)
