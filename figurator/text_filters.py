@@ -1,18 +1,14 @@
 from __future__ import print_function
 from os import path
 import re
-from . import process_includes, load_spec
-from .util import apply_defaults
+import pypandoc
+from .interface import load_spec
+from .processors import process_includes
 
-__dirname = path.dirname(__file__)
-templates = path.join(__dirname,"templates")
 pattern = re.compile("<!--\[\[(.+)\]\]-->")
 
-def inline_figure_filter(defs, **kwargs):
-    captions=kwargs.pop('captions',None)
-    spec = load_spec(defs, captions=captions)
-    kwargs['template_dir'] = templates
-    includes = process_includes(spec, **apply_defaults(kwargs))
+def inline_figure_filter(spec, **kwargs):
+    includes = process_includes(spec, **kwargs)
 
     items = {l:d for l,d in includes}
     def fn(matchobj):
@@ -26,3 +22,11 @@ def inline_figure_filter(defs, **kwargs):
         return pattern.sub(fn,text)
     return match_function
 
+def latex_figure_list(ctx, spec, **kwargs):
+    """
+    Generates a list of figures and descriptions that can
+    be piped to pandoc and/or latex
+    """
+    __ = process_includes(spec, **kwargs)
+    for cfg, (id,item) in zip(spec,__):
+        print(item)
