@@ -6,20 +6,20 @@
   \begin{threeparttable}
     \caption{<<caption >>}
     <<content >>
-    <# if notes #>
+    <# if notes -#>
     \begin{tablenotes}
-      <# for k,note in notes.iteritems() #>
-      <# if k != "" #>
+      <# for k,note in notes.iteritems() -#>
+      <# if k != "" -#>
       \item [<<k>>] <<note>>
-      <# else #>
+      <# else -#>
       <<note>>
-      <# endif #>
-      <# endfor #>
+      <#- endif #>
+      <#- endfor #>
     \end{tablenotes}
-    <# endif #>
+    <#- endif #>
   \end{threeparttable}
   <# if sideways #>
   \end{adjustbox}
   <# endif #>
-  \label{tab:<<label >>}
+  \label{tab:<< id >>}
 \end{<< env  >>}
