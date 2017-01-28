@@ -30,6 +30,7 @@ typedef = {
     'Table': 'tab:'
 }
 
+__ref_pattern = re.compile("`(\[|\()?((Figure|Table)s?\s+)([\w\s,]+)(\]|\))?`")
 __body_pattern = re.compile("(\w+)(\{(\w+)\})?(,?\s*)")
 ignored_words = ['and','of','or','to']
 def replace_body(text, type='Figure'):
@@ -53,7 +54,6 @@ def figure_id_filter(text):
     `Figure gupta{c}` -> Figure \ref{fig:gupta}c
     `[Tables ranjeev and stuff]` -> [Figures \ref{tab:ranjeev} and \ref{tab:stuff}]
     """
-    pattern = re.compile("`(\[|\()?((Figure|Table)s?\s+)([\w\s,]+)(\]|\))?`")
     def fn(m):
         s = m.group(1) or ""
         s += m.group(2)
@@ -62,4 +62,5 @@ def figure_id_filter(text):
         s += m.group(5) or "" # Close parens if any
         return s
 
-    return pattern.sub(fn,text)
+    return __ref_pattern.sub(fn,text)
+

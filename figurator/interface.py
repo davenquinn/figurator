@@ -1,4 +1,4 @@
-from click import argument, option, pass_context, Path
+from click import argument, option, pass_context, Path, File
 from functools import update_wrapper, partial
 from pypandoc import convert
 from .tex_renderer import TexRenderer
@@ -21,6 +21,7 @@ def standard_interface(f):
     @option('--starred-floats/--no-starred-floats', default=True)
     @option('--natbib','citation_backend',flag_value='natbib', default=True)
     @option('--biblatex', 'citation_backend',flag_value='biblatex')
+    @option("--order-by", default=None, type=File())
     @pass_context
     def cli_wrapper(ctx, defs, **kwargs):
         # Get captions file if defined

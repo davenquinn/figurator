@@ -1,9 +1,12 @@
+\begin{samepage}
 \subsection{Figure \ref{fig:<< id >>}<#- if title #>: \GothamLight{<< title >>}<#- endif #>\hfill%
   \color{light-gray}\HaskligLight{fig:<< id|escape >>}}
+\nopagebreak
 \noindent\centerline{\includegraphics[width=<< width >>
   <#- if scale #>,scale=<< scale >><# endif -#>
 ]{<< file >>}}
 <# if caption -#>
+\nopagebreak
 \captionof{figure}[<<title>>]{<< caption >>}
 <#- else -#>
 \captionlistentry[figure]{<< title >>}
@@ -12,4 +15,5 @@
 \nopagebreak
 \begin{figinfo}<< desc >>\end{figinfo}
 <# endif #>
+\end{samepage}
 \vspace{20pt}

@@ -5,6 +5,7 @@ from os import path
 from click import pass_context
 from .captions import integrate_captions
 from .text_filters import figure_id_filter
+from .includes import reorder_includes
 
 def collected_filename(cfg, collect_dir):
     """
@@ -56,7 +57,10 @@ def update_defaults(item, **kwargs):
         width='20pc',
         sideways=False,
         starred_floats=True,
-        caption="")
+        caption="",
+        # If we check whether figure is referenced, we
+        # can flag unused figures as such
+        referenced=True)
 
     __.update(**item)
 
@@ -88,6 +92,11 @@ def process_includes(ctx, spec, **kwargs):
     collect_dir = kwargs.pop('collect_dir',None)
     if collect_dir is not None:
         spec = update_filenames(spec, collect_dir)
+
+    # Apply figure order if set
+    order_by = kwargs.pop('order_by', None)
+    if order_by is not None:
+        spec = reorder_includes(order_by, spec)
 
     for item in spec:
         cfg = update_defaults(item, **kwargs)

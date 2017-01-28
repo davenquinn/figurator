@@ -1,5 +1,8 @@
-\subsection{Table \ref{tab:<< id >>}<#- if title #>: \GothamLight{<< title >>}<#- endif #>\hfill%
-  \color{light-gray}\HaskligLight{tab:<< id|escape >>}}
+<#- set ref = 'tab:'+id -#>
+\begin{samepage}
+\subsection{Table \ref{<< ref >>}<#- if title #>: \GothamLight{<< title >>}<#- endif #>\hfill%
+  \color{light-gray}\HaskligLight{<< ref |escape >>}}
+\nopagebreak
 <#- if two_column or sideways #>
 \begin{adjustbox}{width=\textwidth,center}
 <# endif -#>
@@ -8,7 +11,7 @@
   \captionof{table}[<<title>>]{<< caption >>}
   <# else #>
   \captionlistentry[table]{<< title >>}
-  <# endif -#>\label{tab:<< id >>}
+  <# endif -#>\label{<< ref >>}
   <<content >>
   <#- if notes #>
   \begin{tablenotes}
@@ -27,5 +30,6 @@
 \nopagebreak
 \begin{figinfo}<< desc >>\end{figinfo}
 <# endif -#>
+\end{samepage}
 \vspace{20pt}
 
