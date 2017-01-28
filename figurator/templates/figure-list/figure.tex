@@ -1,8 +1,8 @@
 \subsection{Figure \ref{fig:<< id >>}<#- if title #>: \GothamLight{<< title >>}<#- endif #>\hfill%
-  \color{light-gray}\HaskligLight{fig:<< id >>}}
-\noindent\includegraphics[width=<< width >>
+  \color{light-gray}\HaskligLight{fig:<< id|escape >>}}
+\noindent\centerline{\includegraphics[width=<< width >>
   <#- if scale #>,scale=<< scale >><# endif -#>
-]{<< file >>}
+]{<< file >>}}
 <# if caption -#>
 \captionof{figure}[<<title>>]{<< caption >>}
 <#- else -#>

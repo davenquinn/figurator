@@ -17,13 +17,13 @@ def inline_figure_filter(spec, includes):
         return pattern.sub(fn,text)
     return match_function
 
-def latex_figure_list(spec, includes, **kwargs):
+def latex_figure_list(spec, includes, outfile, **kwargs):
     """
     Generates a list of figures and descriptions that can
     be piped to pandoc and/or latex
     """
     for cfg, (id,item) in zip(spec,includes):
-        print(item)
+        print(item, file=outfile)
 
 typedef = {
     'Figure': 'fig:',

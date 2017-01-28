@@ -35,7 +35,8 @@ def collect(defs, collect_dir, search_dirs, copy=False):
 @template_dir("figure-list")
 @standard_interface
 def figure_list(ctx, defs, includes):
-    latex_figure_list(defs, includes)
+    outfile=click.get_text_stream('stdout')
+    latex_figure_list(defs, includes, outfile)
 
 @figures.command(name='inline')
 @template_dir("generic")
@@ -44,9 +45,20 @@ def inline_figures(ctx, defs, includes):
     """
     A text filter to include inline figures in pandoc markdown
     Pipe text through this filter then into pandoc
+
+    Also includes filter to expand refs
     """
     stdin = click.get_text_stream('stdin')
     stdout = click.get_text_stream('stdout')
     fn = inline_figure_filter(defs, includes)
     text = figure_id_filter(stdin.read())
     stdout.write(fn(text))
+
+@figures.command(name='expand-refs')
+def expand_refs():
+    stdin = click.get_text_stream('stdin')
+    stdout = click.get_text_stream('stdout')
+    text = figure_id_filter(stdin.read())
+    stdout.write(text)
+
+expand_refs.__doc__ = figure_id_filter.__doc__

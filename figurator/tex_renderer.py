@@ -23,6 +23,9 @@ def uncertain(value,rounding=2):
     except AttributeError:
         return value
 
+def escape(value):
+    return value.replace('_','{\_}')
+
 # Load file from local templates directory before
 # resorting to module's templates directory
 # TODO: create a configurable template directory
@@ -42,6 +45,7 @@ class TexRenderer(Environment):
 
         self.filters["un"] = uncertain
         self.filters["n"] = nominal
+        self.filters["escape"] = escape
 
     def make_figure(self, data, template="figure.tex"):
         # allow overriding of template from figure defs

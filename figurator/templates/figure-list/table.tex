@@ -1,33 +1,31 @@
 \subsection{Table \ref{tab:<< id >>}<#- if title #>: \GothamLight{<< title >>}<#- endif #>\hfill%
-  \color{light-gray}\HaskligLight{tab:<< id >>}}
-
-<# if sideways #>
-\begin{adjustbox}{angle=90}
-<# endif #>
+  \color{light-gray}\HaskligLight{tab:<< id|escape >>}}
+<#- if two_column or sideways #>
+\begin{adjustbox}{width=\textwidth,center}
+<# endif -#>
 \begin{threeparttable}
-  <# if caption -#>
+  <#- if caption #>
   \captionof{table}[<<title>>]{<< caption >>}
-  <#- else -#>
+  <# else #>
   \captionlistentry[table]{<< title >>}
-  <#- endif #>\label{tab:<< id >>}
+  <# endif -#>\label{tab:<< id >>}
   <<content >>
-  <# if notes -#>
+  <#- if notes #>
   \begin{tablenotes}
-    <# for k,note in notes.iteritems() #>
-    <# if k != "" #>
+    <#- for k,note in notes.iteritems() #>
+    <#- if k != "" -#>
     \item [<<k>>] <<note>>
-    <# else #>
+    <#- else -#>
     <<note>>
-    <# endif #>
-    <# endfor #>
+    <#- endif -#>
+    <# endfor -#>
   \end{tablenotes}
-  <#- endif #>
+  <# endif -#>
 \end{threeparttable}
-<# if sideways -#>\end{adjustbox}<#- endif #>
+<#- if two_column or sideways #>\end{adjustbox}<# endif #>
 <#- if desc #>
 \nopagebreak
 \begin{figinfo}<< desc >>\end{figinfo}
-<# endif #>
+<# endif -#>
 \vspace{20pt}
-
 
