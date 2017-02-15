@@ -13,6 +13,8 @@ def nominal(value,rounding=2):
         return fs.format(value.n)
     except AttributeError:
         return fs.format(value)
+    except TypeError:
+        return fs.format(value)
 
 def uncertain(value,rounding=2):
     fs = "{0:."+str(rounding)+"f}"
@@ -25,6 +27,29 @@ def uncertain(value,rounding=2):
 
 def escape(value):
     return value.replace('_','{\_}')
+
+def uncertain_parenthetical(value,rounding=2):
+    fstring = "{0:."+str(rounding)+"uS}"
+    try:
+        s = fstring.format(value)
+    except ValueError:
+        s = nominal(value,rounding)+"()"
+    return s.replace("(","~(")
+    
+
+def filter_by_fstring(value,fstring="{}"):
+    try:
+        return fstring.format(value)
+    except:
+        pass
+    try:
+        return fstring.format(*value)
+    except:
+        pass
+    try:
+        return fstring.format(**value)
+    except:
+        pass
 
 # Load file from local templates directory before
 # resorting to module's templates directory
@@ -43,9 +68,11 @@ class TexRenderer(Environment):
             comment_end_string = '=>',
             loader = FileSystemLoader(dirs))
 
+        self.filters["f"] = filter_by_fstring
         self.filters["un"] = uncertain
         self.filters["n"] = nominal
         self.filters["escape"] = escape
+        self.filters["unp"] = uncertain_parenthetical
 
     def make_figure(self, data, template="figure.tex"):
         # allow overriding of template from figure defs
