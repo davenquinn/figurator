@@ -33,7 +33,7 @@ def uncertain_parenthetical(value,rounding=2):
     try:
         s = fstring.format(value)
     except ValueError:
-        s = nominal(value,rounding)+"()"
+        s = str(value)+"()"
     return s.replace("(","~(")
     
 
