@@ -35,21 +35,17 @@ def uncertain_parenthetical(value,rounding=2):
     except ValueError:
         s = str(value)+"()"
     return s.replace("(","~(")
-    
 
-def filter_by_fstring(value,fstring="{}"):
-    try:
-        return fstring.format(value)
-    except:
-        pass
-    try:
-        return fstring.format(*value)
-    except:
-        pass
-    try:
-        return fstring.format(**value)
-    except:
-        pass
+def filter_by_fstring(val,fstring="{}"):
+    tries = [
+        lambda x: fstring.format(x),
+        lambda x: fstring.format(*x),
+        lambda x: fstring.format(**x)]
+    for fn in tries:
+        try:
+            return fn(value)
+        except:
+            pass
 
 # Load file from local templates directory before
 # resorting to module's templates directory
