@@ -18,6 +18,8 @@ def standard_interface(f):
     @option('--captions',type=_path)
     @option('--collect-dir',type=_path,
         help="Directory in which figure files can be found by ID")
+    # This is kinda a legacy option -- this type of thing can be controlled by
+    # pointing to a new set of templates now.
     @option('--starred-floats/--no-starred-floats', default=True)
     @option('--natbib','citation_backend',flag_value='natbib', default=True)
     @option('--biblatex', 'citation_backend',flag_value='biblatex')
