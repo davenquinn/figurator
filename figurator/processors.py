@@ -57,6 +57,7 @@ def update_defaults(item, **kwargs):
         width='20pc',
         sideways=False,
         starred_floats=True,
+        enabled=True,
         caption="",
         # If we check whether figure is referenced, we
         # can flag unused figures as such
@@ -108,5 +109,8 @@ def process_includes(ctx, spec, **kwargs):
                 figure_id_filter(cfg["caption"]))
 
         method = getattr(ctx.tex_renderer,"make_"+cfg['type'])
+        # Get rid of disabled figures
+        if not cfg['enabled']:
+            continue
         yield cfg["id"], method(cfg)
 
