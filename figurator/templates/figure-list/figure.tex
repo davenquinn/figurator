@@ -11,6 +11,12 @@
 <#- else -#>
 \captionlistentry[figure]{<< title >>}
 <#- endif #>\label{fig:<< id >>}
+<#- if not enabled #>
+{\color{red}\textbf{Disabled}}
+<# endif -#>
+<#- if not referenced #>
+{\color{red}\textbf{Unreferenced}}
+<# endif -#>
 <#- if desc #>
 \nopagebreak
 \begin{figinfo}<< desc >>\end{figinfo}

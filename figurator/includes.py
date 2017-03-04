@@ -23,10 +23,14 @@ def reorder_includes(order_file, includes):
     includes = list(includes)
     keys = [a['id'] for a in order]
     def sortfunc(a):
+        ### Sort disabled figures to the end
+        if a['enabled'] == False:
+            return len(keys)
         try:
             return keys.index(a['id'])
         except ValueError:
-            return len(keys)
+            # This would happen for unreferenced figures
+            return len(keys)+1
     includes = sorted(includes, key=sortfunc)
     for v in includes:
         # Mark unreferenced figures
