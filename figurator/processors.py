@@ -50,11 +50,13 @@ def update_defaults(item, **kwargs):
     Updates passed configuration for figures and
     tables with default values
     """
+    # We need to add a default width
+    # or ability to specify one
     __ = dict(
         scale=None,
         type='figure',
         two_column=False,
-        width='20pc',
+        width=False,
         sideways=False,
         starred_floats=True,
         enabled=True,
@@ -99,6 +101,7 @@ def process_includes(ctx, spec, **kwargs):
     if order_by is not None:
         spec = reorder_includes(order_by, spec)
 
+    i = 0
     for item in spec:
         cfg = update_defaults(item, **kwargs)
         # Process caption
@@ -112,5 +115,7 @@ def process_includes(ctx, spec, **kwargs):
         # Get rid of disabled figures
         if not cfg['enabled']:
             continue
+        i += 1
+        cfg['n'] = i
         yield cfg["id"], method(cfg)
 
