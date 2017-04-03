@@ -103,7 +103,12 @@ def process_includes(ctx, spec, **kwargs):
     if order_by is not None:
         spec = reorder_includes(order_by, spec)
 
+    # No way to turn this off in the cli yet
+    ignore_disabled = kwargs.pop('ignore_disabled', True)
     for cfg in spec:
+        if ignore_disabled and not cfg['enabled']:
+            continue
+
         def process_text_field(id):
             if cfg[id] != "":
                 cfg[id] = ctx.pandoc_processor(cfg[id])

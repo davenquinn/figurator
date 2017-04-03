@@ -15,7 +15,7 @@
   <<content >>
   <#- if notes #>
   \begin{tablenotes}
-    <#- for k,note in notes.iteritems() #>
+    <#- for k,note in notes.items() #>
     <#- if k != "" -#>
     \item [<<k>>] <<note>>
     <#- else -#>
