@@ -36,7 +36,7 @@ def uncertain_parenthetical(value,rounding=2):
         s = str(value)+"()"
     return s.replace("(","~(")
 
-def filter_by_fstring(val,fstring="{}"):
+def filter_by_fstring(value,fstring="{}"):
     tries = [
         lambda x: fstring.format(x),
         lambda x: fstring.format(*x),
