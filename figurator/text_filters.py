@@ -27,7 +27,7 @@ def latex_figure_list(spec, includes, outfile, **kwargs):
 
 typedef = {
     'Figure': 'fig:',
-    'Table': 'tab:'
+    'Table': 'tbl:'
 }
 
 __ref_pattern = re.compile("`(\[|\()?((Figure|Table)s?\s+)([\w\s,]+)(\]|\))?`")

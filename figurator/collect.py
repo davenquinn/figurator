@@ -44,6 +44,10 @@ def collect_figures(spec, outdir, search_paths=[], copy=False):
             continue
 
         new_fn = collected_filename(cfg,outdir)
+        # if path.isfile(new_fn):
+            # if path.getsize(fn) == path.getsize(new_fn):
+                # continue
+
         if copy:
             copyfile(fn,new_fn)
         else:

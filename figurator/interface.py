@@ -6,8 +6,7 @@ from .processors import load_spec, process_includes
 
 _path = Path(exists=True)
 
-def pandoc_processor(text, citation_backend=None):
-    extra_args = []
+def pandoc_processor(text, citation_backend=None, extra_args=[]):
     if citation_backend is not None:
         extra_args.append("--"+citation_backend)
     return convert(text, 'latex', format='md',

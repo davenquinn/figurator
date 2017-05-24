@@ -59,11 +59,12 @@ def update_defaults(item, **kwargs):
         width=False,
         sideways=False,
         starred_floats=True,
-        enabled=True,
+        desc="",
         caption="",
         # If we check whether figure is referenced, we
         # can flag unused figures as such
-        referenced=True)
+        referenced=True,
+        enabled=True)
 
     __.update(**item)
 
@@ -96,20 +97,27 @@ def process_includes(ctx, spec, **kwargs):
     if collect_dir is not None:
         spec = update_filenames(spec, collect_dir)
 
+    spec = [update_defaults(item, **kwargs)
+            for item in spec]
+
     # Apply figure order if set
     order_by = kwargs.pop('order_by', None)
     if order_by is not None:
         spec = reorder_includes(order_by, spec)
 
-    i = 0
-    for item in spec:
-        cfg = update_defaults(item, **kwargs)
+    # No way to turn this off in the cli yet
+    ignore_disabled = kwargs.pop('ignore_disabled', True)
+    for cfg in spec:
+        if ignore_disabled and not cfg['enabled']:
+            continue
+
+        def process_text_field(id):
+            if cfg[id] != "":
+                cfg[id] = ctx.pandoc_processor(cfg[id])
+
         # Process caption
-        if cfg['caption'] != "":
-            cfg['caption'] = ctx.pandoc_processor(
-                # This is pretty ugly, come up with a
-                # better system
-                figure_id_filter(cfg["caption"]))
+        process_text_field('caption')
+        process_text_field('desc')
 
         method = getattr(ctx.tex_renderer,"make_"+cfg['type'])
         # Get rid of disabled figures
