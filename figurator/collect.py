@@ -35,9 +35,9 @@ def collect_figures(spec, outdir, search_paths=[], copy=False):
             continue
 
         new_fn = collected_filename(cfg,outdir)
-        # if path.isfile(new_fn):
-            # if path.getsize(fn) == path.getsize(new_fn):
-                # continue
+        if path.isfile(new_fn):
+            if path.getsize(fn) == path.getsize(new_fn):
+                continue
 
         if copy:
             copyfile(fn,new_fn)
@@ -49,3 +49,5 @@ def collect_figures(spec, outdir, search_paths=[], copy=False):
         echo(_bullet('green')+" "+mode+" "+_file(fn))
         pad = " "*len(mode)
         echo(pad+"to "+_file(new_fn))
+
+    echo("Finished collecting figures")

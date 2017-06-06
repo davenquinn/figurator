@@ -25,7 +25,7 @@ def standard_interface(f):
     def cli_wrapper(ctx, defs, **kwargs):
         # Get captions file if defined
         spec = load_spec(defs,
-            captions=kwargs.pop('captions', None))
+            caption_file=kwargs.pop('captions', None))
 
         # Create a global pandoc processor
         ctx.pandoc_processor = partial(

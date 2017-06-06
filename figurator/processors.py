@@ -3,7 +3,7 @@ import codecs
 import yaml
 from os import path
 from click import pass_context
-from .captions import integrate_captions
+from .captions import load_captions, integrate_captions
 from .text_filters import figure_id_filter
 from .includes import reorder_includes
 
@@ -26,14 +26,17 @@ def write_file(fn, text):
     with codecs.open(fn,"w",encoding="utf8") as f:
         f.write(text)
 
-def load_spec(spec, captions=None):
+def load_spec(spec, caption_file=None, pandoc_processor=None):
     """
     Load spec from YAML or simply pass it through
     unaltered if it is already a list of mappings
 
     kwargs:
       captions  pass in a separate filename (or object) of pandoc
-                markdown containing figure captions
+                markdown (with extension .md) or latex
+                containing figure captions. Captions should be separated
+                with section headers titled with the figure id, e.g
+                #afig-id
     """
     try:
         with open(spec) as f:
@@ -41,8 +44,10 @@ def load_spec(spec, captions=None):
     except TypeError:
         pass
 
-    if captions is not None:
+    if caption_file is not None:
+        captions = load_captions(caption_file)
         spec = list(integrate_captions(spec, captions))
+
     return spec
 
 def update_defaults(item, **kwargs):
@@ -88,8 +93,15 @@ def process_includes(ctx, spec, **kwargs):
     location
     """
     # Load spec if we haven't already
+
+    captions_file = kwargs.pop('captions', None)
+    if captions_file is not None:
+        captions_are_markdown = path.splitext(captions_file)[1] == '.md'
+    else:
+        captions_are_markdown = True
+
     spec = load_spec(spec,
-        captions=kwargs.pop('captions', None))
+        caption_file=captions_file)
     # We modify filenames if invoked with `collect_dir`
     collect_dir = kwargs.pop('collect_dir',None)
     if collect_dir is not None:
@@ -114,7 +126,8 @@ def process_includes(ctx, spec, **kwargs):
                 cfg[id] = ctx.pandoc_processor(cfg[id])
 
         # Process caption
-        process_text_field('caption')
+        if captions_are_markdown:
+            process_text_field('caption')
         process_text_field('desc')
 
         method = getattr(ctx.tex_renderer,"make_"+cfg['type'])
