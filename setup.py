@@ -8,7 +8,7 @@ install_requires = [
 
 setup(
     name="figurator",
-    version="0.0.1",
+    version="0.1",
     long_description=__doc__,
     packages=find_packages(),
     install_requires=install_requires,
@@ -16,6 +16,6 @@ setup(
     zip_safe=True,
     entry_points="""
         [console_scripts]
-        figures=figurator.cli:figures
+        figurator=figurator.cli:figures
     """
 )
