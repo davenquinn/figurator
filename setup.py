@@ -16,6 +16,6 @@ setup(
     zip_safe=True,
     entry_points="""
         [console_scripts]
-        figurator=figurator.cli:figures
+        figurator=figurator.cli:cli
     """
 )

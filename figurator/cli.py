@@ -11,7 +11,7 @@ from .interface import standard_interface, _path
 # Setup default template directories
 __dirname = path.dirname(__file__)
 
-figures = click.Group()
+cli = click.Group()
 
 def template_dir(location):
     return click.option(
@@ -20,7 +20,7 @@ def template_dir(location):
         default=[path.join(__dirname,"templates",location)],
         help="Directory containing templates (can be several)")
 
-@figures.command(name='collect')
+@cli.command(name='collect')
 @click.argument('defs', type=_path)
 @click.argument('collect_dir', type=_path)
 @click.argument('search_dirs', type=_path, nargs=-1)
@@ -31,21 +31,21 @@ def collect(defs, collect_dir, search_dirs, copy=False):
         search_dirs,
         copy=copy)
 
-@figures.command(name='resolve')
+@cli.command(name='resolve')
 @click.argument('defs', type=_path)
 @click.argument('search_dirs', type=_path, nargs=-1)
 def resolve(defs, search_dirs):
     for fn in resolve_figures(defs, search_dirs):
         click.echo(fn)
 
-@figures.command(name='list')
+@cli.command(name='list')
 @template_dir("figure-list")
 @standard_interface
 def figure_list(ctx, defs, includes):
     outfile=click.get_text_stream('stdout')
     latex_figure_list(defs, includes, outfile)
 
-@figures.command(name='inline')
+@cli.command(name='inline')
 @template_dir("generic")
 @standard_interface
 def inline_figures(ctx, defs, includes):
@@ -61,7 +61,7 @@ def inline_figures(ctx, defs, includes):
     text = figure_id_filter(stdin.read())
     stdout.write(fn(text))
 
-@figures.command(name='expand-refs')
+@cli.command(name='expand-refs')
 def expand_refs():
     stdin = click.get_text_stream('stdin')
     stdout = click.get_text_stream('stdout')
