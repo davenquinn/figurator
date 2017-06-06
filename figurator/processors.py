@@ -55,11 +55,18 @@ def update_defaults(item, **kwargs):
     Updates passed configuration for figures and
     tables with default values
     """
+    # We need to add a default width
+    # or ability to specify one
     __ = dict(
+        # Width and scale are used to develop
+        # the size
+        width='20pc',
         scale=None,
+        # If size is present, it takes precedence over
+        # width and scale.
+        size=None,
         type='figure',
         two_column=False,
-        width='20pc',
         sideways=False,
         starred_floats=True,
         desc="",
@@ -81,6 +88,13 @@ def update_defaults(item, **kwargs):
     if kwargs.pop("starred_floats",True):
         if __["two_column"]:
             __["env"] += "*"
+
+    if __.get('size') is None:
+        size = "width={}".format(__['width'])
+        scale = __.get('scale')
+        if scale is not None:
+            size += ",scale={}".format(scale)
+        __['size'] = size
 
     return __
 
@@ -117,6 +131,7 @@ def process_includes(ctx, spec, **kwargs):
 
     # No way to turn this off in the cli yet
     ignore_disabled = kwargs.pop('ignore_disabled', True)
+    i = 0 # Figure counter
     for cfg in spec:
         if ignore_disabled and not cfg['enabled']:
             continue
@@ -131,5 +146,10 @@ def process_includes(ctx, spec, **kwargs):
         process_text_field('desc')
 
         method = getattr(ctx.tex_renderer,"make_"+cfg['type'])
+        # Get rid of disabled figures
+        if not cfg['enabled']:
+            continue
+        i += 1
+        cfg['n'] = i
         yield cfg["id"], method(cfg)
 

@@ -8,6 +8,21 @@ from .processors import load_spec, collected_filename
 _file = lambda x: style(x, fg='cyan')
 _bullet = lambda c: style("●",fg=c)
 
+def find_file(cfg,search_paths=[]):
+    f = cfg['file']
+    for p in search_paths:
+        fn = path.join(p,f)
+        if path.isfile(fn):
+            return fn
+    raise IOError("File not found")
+
+def resolve_figures(spec, search_paths=[]):
+    spec = load_spec(spec)
+    for cfg in spec:
+        fn = find_file(cfg, search_paths)
+        yield fn
+
+
 def collect_figures(spec, outdir, search_paths=[], copy=False):
     """
     Collects figures into a specific directory
@@ -18,20 +33,14 @@ def collect_figures(spec, outdir, search_paths=[], copy=False):
     """
     spec = load_spec(spec)
 
-    def __find_file(f):
-        for p in search_paths:
-            fn = path.join(p,f)
-            if path.isfile(fn):
-                return fn
-        return None
-
     for cfg in spec:
-        if not 'file' in cfg:
-            continue # No file to be had
-
-        fn = __find_file(cfg['file'])
-        if fn is None:
+        try:
+            fn = find_file(cfg, search_paths)
+        except IOError:
             echo(_bullet('red')+" Couldn't find file "+_file(cfg['file']))
+            continue
+        except AttributeError:
+            echo(_bullet('red')+" No file defined")
             continue
 
         new_fn = collected_filename(cfg,outdir)
@@ -42,7 +51,10 @@ def collect_figures(spec, outdir, search_paths=[], copy=False):
         if copy:
             copyfile(fn,new_fn)
         else:
-            symlink(fn,new_fn)
+            try:
+                symlink(fn,new_fn)
+            except:
+                echo(_bullet('yellow')+" File exists")
 
         # Report progress
         mode = "Copied" if copy else "Symlinked"

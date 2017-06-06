@@ -1,7 +1,7 @@
 from __future__ import print_function
 import click, re
 from os import path
-from .collect import collect_figures
+from .collect import collect_figures, resolve_figures
 from .text_filters import (
     inline_figure_filter,
     latex_figure_list,
@@ -30,6 +30,13 @@ def collect(defs, collect_dir, search_dirs, copy=False):
         defs, collect_dir,
         search_dirs,
         copy=copy)
+
+@figures.command(name='resolve')
+@click.argument('defs', type=_path)
+@click.argument('search_dirs', type=_path, nargs=-1)
+def resolve(defs, search_dirs):
+    for fn in resolve_figures(defs, search_dirs):
+        click.echo(fn)
 
 @figures.command(name='list')
 @template_dir("figure-list")
