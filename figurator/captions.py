@@ -7,8 +7,9 @@ def parse_markdown(fobj):
     Parse captions to a dict generator
     """
     key = None
+    val = ""
     for line in fobj:
-        if line.startswith("#"):
+        if line.startswith("##"):
             if key is not None:
                 yield key, val.rstrip()
             key = line[1:].strip()
@@ -18,13 +19,14 @@ def parse_markdown(fobj):
     if key is not None:
         yield key, val.rstrip()
 
-regex = compile(r'^\\section{([\w\\]+)}')
+regex = compile(r'^\\subsection{([\w\\\-]+)}')
 
 def parse_latex(fobj):
     """
     Parse captions to a dict generator
     """
     key = None
+    val = ""
     for line in fobj:
         match = regex.match(line)
         if match:
@@ -40,7 +42,8 @@ def parse_latex(fobj):
 def load_captions(filename):
     """
     Loads captions from a markdown or latex document containing
-    a list of captions organized by `#fig-id` headers.
+    a list of captions organized by `##fig-id` subheaders.
+    The first header will be ignored.
     """
     parser = parse_markdown
     ext = path.splitext(filename)[1]

@@ -141,8 +141,8 @@ def process_includes(ctx, spec, **kwargs):
                 cfg[id] = ctx.pandoc_processor(cfg[id])
 
         # Process caption
-        if captions_are_markdown:
-            process_text_field('caption')
+        #if captions_are_markdown:
+        #    process_text_field('caption')
         process_text_field('desc')
 
         method = getattr(ctx.tex_renderer,"make_"+cfg['type'])

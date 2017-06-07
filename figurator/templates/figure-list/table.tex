@@ -1,7 +1,13 @@
 <#- set ref = 'tbl:'+id -#>
+<# macro tabid() -#>
+\ref{<< ref >>}<#- if title #>: \GothamLight{<< title >>}<#- endif #>
+<#- endmacro #>
+<# macro tabref() -#>
+\color{light-gray}\HaskligLight{<< ref |escape >>}
+<#- endmacro #>
+
 \begin{samepage}
-\subsection{Table \ref{<< ref >>}<#- if title #>: \GothamLight{<< title >>}<#- endif #>\hfill%
-  \color{light-gray}\HaskligLight{<< ref |escape >>}}
+\subsection[Table~~~<< tabid() >>~~~<< tabref() >>]{Table~<< tabid() >>\hfill<< tabref() >>}
 \nopagebreak
 <#- if two_column or sideways #>
 \begin{adjustbox}{width=\textwidth,center}
