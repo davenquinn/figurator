@@ -1,12 +1,13 @@
 <# macro figid() -#>
-Figure \ref{fig:<< id >>}<#- if title #>: \GothamLight{<< title >>}<#- endif #>
+Figure \ref{fig:<< id >>}
 <#- endmacro #>
 <# macro figref() -#>
 \color{light-gray}\HaskligLight{fig:<< id|escape >>}
 <#- endmacro #>
 
 \begin{samepage}
-\subsection[<< figid() >>~~~<< figref() >>]{<< figid() >> \hfill << figref() >>}
+\subsection[<< figid() >>~~~<< figref() >>~~~<#- if title #>\textit{<< title >>}<#- endif #>]%
+  {<< figid() >><#- if title #>: \GothamLight{<< title >>} \hfill \figref{}<#- endif #>}
 \nopagebreak
 \noindent\centerline{\includegraphics[<< size >>]{<< file >>}}
 <# if caption -#>
