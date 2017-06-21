@@ -6,8 +6,8 @@ Figure \ref{fig:<< id >>}
 <#- endmacro #>
 
 \begin{samepage}
-\subsection[<< figid() >>~~~<< figref() >>~~~<#- if title #>\textit{<< title >>}<#- endif #>]%
-  {<< figid() >><#- if title #>: \GothamLight{<< title >>} \hfill \figref{}<#- endif #>}
+  \subsection[<< figid() >><#- if title #>: \textit{<< title >>}<#- endif #>~~\small{<< figref() >>}]%
+  {<< figid() >><#- if title #>: \GothamLight\small{<< title >>} \hfill << figref() >><#- endif #>}
 \nopagebreak
 \noindent\centerline{\includegraphics[<< size >>]{<< file >>}}
 <# if caption -#>

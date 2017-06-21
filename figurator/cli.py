@@ -35,8 +35,9 @@ def collect(defs, collect_dir, search_dirs, copy=False):
 @click.argument('defs', type=_path)
 @click.argument('search_dirs', type=_path, nargs=-1)
 def resolve(defs, search_dirs):
-    for fn in resolve_figures(defs, search_dirs):
-        click.echo(fn)
+    names = ['\"'+click.format_filename(fn)+'\"'
+         for fn in resolve_figures(defs, search_dirs)]
+    click.echo(" ".join(names))
 
 @cli.command(name='list')
 @template_dir("figure-list")

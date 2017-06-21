@@ -54,7 +54,7 @@ def filter_by_fstring(value,fstring="{}"):
 class TexRenderer(Environment):
     def __init__(self, *template_dirs):
         dirs = list(template_dirs)
-        dirs.append('templates')
+        dirs += ['templates']
         Environment.__init__(self,
             block_start_string = '<#',
             block_end_string = '#>',
