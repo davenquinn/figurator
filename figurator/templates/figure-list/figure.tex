@@ -6,9 +6,10 @@ Figure \ref{fig:<< id >>}
 <#- endmacro #>
 
 \begin{samepage}
-  \subsection[<< figid() >><#- if title #>: \textit{<< title >>}<#- endif #>~~\small{<< figref() >>}]%
-  {<< figid() >><#- if title #>: \GothamLight\small{<< title >>} \hfill << figref() >><#- endif #>}
+  %\subsection[<< figid() >><#- if title #>: \textit{<< title >>}<#- endif #>~~\small{<< figref() >>}]%
+  %{<< figid() >><#- if title #>: \GothamLight\small{<< title >>} \hfill << figref() >><#- endif #>}
 \nopagebreak
+<#- if not two_column #>\begin{multicols}{2}<# endif -#>
 \noindent\centerline{\includegraphics[<< size >>]{<< file >>}}
 <# if caption -#>
 \nopagebreak
@@ -26,5 +27,6 @@ Figure \ref{fig:<< id >>}
 \nopagebreak
 \begin{figinfo}<< desc >>\end{figinfo}
 <# endif #>
+<#- if not two_column #>\end{multicols}<# endif -#>
 \end{samepage}
 \pagebreak
