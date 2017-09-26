@@ -22,7 +22,11 @@ def latex_figure_list(spec, includes, outfile, **kwargs):
     Generates a list of figures and descriptions that can
     be piped to pandoc and/or latex
     """
+    # Enable subsetting of, e.g. figures and tables...
+    type = kwargs.pop("type",'figure')
     for cfg, (id,item) in zip(spec,includes):
+        if type != cfg.get('type','figure'):
+            continue
         print(item, file=outfile)
 
 typedef = {

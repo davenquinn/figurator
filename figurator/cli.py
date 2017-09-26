@@ -44,7 +44,15 @@ def resolve(defs, search_dirs):
 @standard_interface
 def figure_list(ctx, defs, includes):
     outfile=click.get_text_stream('stdout')
-    latex_figure_list(defs, includes, outfile)
+    defs = list(defs)
+    includes = list(includes)
+
+    print("\\section{Tables}\n", file=outfile)
+    latex_figure_list(defs, includes, outfile, type="table")
+
+    print("\n\\section{Figures}\n", file=outfile)
+    latex_figure_list(defs, includes, outfile, type="figure")
+
 
 @cli.command(name='inline')
 @template_dir("generic")
