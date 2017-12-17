@@ -3,16 +3,16 @@ from os import path
 import re
 
 def inline_figure_filter(spec, includes):
-    pattern = re.compile("<!--\[\[(.+)\]\]-->")
+    pattern = re.compile("^\\inlinefigure\{(fig|tbl):(.+)\}")
 
     items = {l:d for l,d in includes}
     def fn(matchobj):
         try:
-            id = matchobj.group(1)
+            id = matchobj.group(2)
             return items[id]
         except KeyError:
-            # Don't replace if we can't find include
-            return matchobj.group(0)
+            # Replace with empty string if we can't find include
+            return ""
     def match_function(text):
         return pattern.sub(fn,text)
     return match_function
