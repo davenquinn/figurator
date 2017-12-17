@@ -3,7 +3,7 @@ from os import path
 import re
 
 def inline_figure_filter(spec, includes):
-    pattern = re.compile("^\\inlinefigure\{(fig|tbl):(.+)\}")
+    pattern = re.compile("\\\inlinefigure\{(fig|tbl):(.+)\}")
 
     items = {l:d for l,d in includes}
     def fn(matchobj):
