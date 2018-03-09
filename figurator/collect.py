@@ -14,7 +14,7 @@ def find_file(cfg,search_paths=[]):
         fn = path.join(p,f)
         if path.isfile(fn):
             return fn
-    raise IOError("File not found")
+    raise IOError("File '{0}' not found".format(f))
 
 def resolve_figures(spec, search_paths=[]):
     spec = load_spec(spec)
