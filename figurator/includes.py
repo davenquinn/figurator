@@ -1,7 +1,7 @@
 from re import compile
 
-__aux_pattern = compile(r'\\newlabel{((fig|tab):(\w+))}{{(\d+)\\relax }{\d+}}')
-__tex_pattern = compile(r'\\ref{((fig|tab):(\w+))}')
+__aux_pattern = compile(r'\\newlabel{((fig|tbl):(\w+))}{{(\d+)\\relax }{\d+}}')
+__tex_pattern = compile(r'\\ref{((fig|tbl):(\w+))}')
 
 def get_texfile_references(f):
     """
@@ -31,6 +31,7 @@ def reorder_includes(order_file, includes):
             # This would happen for unreferenced figures
             return len(keys)+1
     includes = sorted(_includes, key=sortfunc)
+
     for v in includes:
         # Mark unreferenced figures
         # as such.

@@ -3,16 +3,16 @@ from os import path
 import re
 
 def inline_figure_filter(spec, includes):
-    pattern = re.compile("<!--\[\[(.+)\]\]-->")
+    pattern = re.compile("\\\inlinefigure\{(fig|tbl):(.+)\}")
 
     items = {l:d for l,d in includes}
     def fn(matchobj):
         try:
-            id = matchobj.group(1)
+            id = matchobj.group(2)
             return items[id]
         except KeyError:
-            # Don't replace if we can't find include
-            return matchobj.group(0)
+            # Replace with empty string if we can't find include
+            return ""
     def match_function(text):
         return pattern.sub(fn,text)
     return match_function
@@ -22,7 +22,11 @@ def latex_figure_list(spec, includes, outfile, **kwargs):
     Generates a list of figures and descriptions that can
     be piped to pandoc and/or latex
     """
+    # Enable subsetting of, e.g. figures and tables...
+    type = kwargs.pop("type",'figure')
     for cfg, (id,item) in zip(spec,includes):
+        if type != cfg.get('type','figure'):
+            continue
         print(item, file=outfile)
 
 typedef = {
