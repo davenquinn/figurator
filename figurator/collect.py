@@ -8,20 +8,25 @@ from .processors import load_spec, collected_filename
 _file = lambda x: style(x, fg='cyan')
 _bullet = lambda c: style("●",fg=c)
 
-def find_file(cfg,search_paths=[]):
-    f = cfg['file']
+def find_file(file,search_paths=[]):
     for p in search_paths:
-        fn = path.join(p,f)
+        fn = path.join(p,file)
         if path.isfile(fn):
             return fn
     raise IOError("File not found")
 
+def find_files(cfg, search_paths=[]):
+    if cfg['files']:
+        for f in cfg['files']:
+            yield find_file(f)
+    if cfg['file']:
+        yield find_file(cfg['file'])
+
 def resolve_figures(spec, search_paths=[]):
     spec = load_spec(spec)
     for cfg in spec:
-        fn = find_file(cfg, search_paths)
-        yield fn
-
+        for f in find_files(cfg, search_paths):
+            yield f
 
 def collect_figures(spec, outdir, search_paths=[], copy=False):
     """
