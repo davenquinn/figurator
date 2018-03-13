@@ -13,7 +13,7 @@ def find_file(file,search_paths=[]):
         fn = path.join(p,file)
         if path.isfile(fn):
             return fn
-    raise IOError("File not found")
+    raise IOError("File '{0}' not found".format(f))
 
 def find_files(cfg, search_paths=[]):
     if cfg['files']:

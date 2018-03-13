@@ -81,7 +81,7 @@ def update_defaults(item, **kwargs):
     __["env"] = __["type"]
 
     if __['two_column']:
-        __['width'] = '42pc'
+        __['width'] = '\\textwidth'
     # Add stars to two_column floats
     # `True` by default
     # (this is useful for two-column layouts)
