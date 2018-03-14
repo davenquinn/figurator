@@ -7,19 +7,22 @@ from .captions import load_captions, integrate_captions
 from .text_filters import figure_id_filter
 from .includes import reorder_includes
 
-def collected_filename(cfg, collect_dir):
+def collected_filename(fn, collect_dir):
     """
     Update filenames to point to files
     collected by the figure-collection
     function
     """
-    ext = path.splitext(cfg['file'])[1]
-    return path.join(collect_dir, cfg['id']+ext)
+    fn = path.basename(fn)
+    return path.join(collect_dir, fn)
 
 def update_filenames(spec, outdir):
     for cfg in spec:
         if 'file' in cfg:
-            cfg['file'] = collected_filename(cfg, outdir)
+            cfg['file'] = collected_filename(cfg['file'], outdir)
+        if 'files' in cfg:
+            cfg['files'] = [collected_filename(i, outdir)
+                            for i in cfg['files']]
         yield cfg
 
 def write_file(fn, text):
@@ -67,6 +70,7 @@ def update_defaults(item, **kwargs):
         size=None,
         type='figure',
         two_column=False,
+        textwidth=False,
         sideways=False,
         starred_floats=True,
         desc="",
@@ -80,8 +84,9 @@ def update_defaults(item, **kwargs):
 
     __["env"] = __["type"]
 
-    if __['two_column']:
+    if __['two_column'] or __['textwidth']:
         __['width'] = '\\textwidth'
+
     # Add stars to two_column floats
     # `True` by default
     # (this is useful for two-column layouts)

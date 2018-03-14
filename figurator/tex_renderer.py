@@ -83,6 +83,9 @@ class TexRenderer(Environment):
         # Add table notes if defined
         if 'notes' in data:
             data["notes"] = OrderedDict(sorted(data["notes"].items()))
+        tmp = data.pop('template',None)
+        if tmp is not None:
+            template = tmp+'.tex'
 
         # Get LaTeX document that holds table body
         try:

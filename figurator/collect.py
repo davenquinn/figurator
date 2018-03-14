@@ -13,14 +13,18 @@ def find_file(file,search_paths=[]):
         fn = path.join(p,file)
         if path.isfile(fn):
             return fn
-    raise IOError("File '{0}' not found".format(f))
+    echo(_bullet('red')+" Couldn't find file "+_file(file), err=True)
 
-def find_files(cfg, search_paths=[]):
-    if cfg['files']:
-        for f in cfg['files']:
-            yield find_file(f)
-    if cfg['file']:
-        yield find_file(cfg['file'])
+def find_files(cfg, search_paths):
+    __ = []
+    if 'files' in cfg:
+        __ += list(cfg['files'])
+    if 'file' in cfg:
+        __.append(cfg['file'])
+    for file in __:
+        fi = find_file(file, search_paths)
+        if fi:
+            yield fi
 
 def resolve_figures(spec, search_paths=[]):
     spec = load_spec(spec)
@@ -36,35 +40,29 @@ def collect_figures(spec, outdir, search_paths=[], copy=False):
     outdir: directory in which to collect figures
     search_paths: dirs in which to search for figures matching filenames
     """
+    secho("Collecting figures from "+_file(spec), bold=True, err=True, fg='cyan')
+
     spec = load_spec(spec)
 
     for cfg in spec:
-        try:
-            fn = find_file(cfg, search_paths)
-        except IOError:
-            echo(_bullet('red')+" Couldn't find file "+_file(cfg['file']))
-            continue
-        except AttributeError:
-            echo(_bullet('red')+" No file defined")
-            continue
+        for fn in find_files(cfg, search_paths):
+            new_fn = collected_filename(fn,outdir)
+            if path.isfile(new_fn):
+                if path.getsize(fn) == path.getsize(new_fn):
+                    continue
 
-        new_fn = collected_filename(cfg,outdir)
-        if path.isfile(new_fn):
-            if path.getsize(fn) == path.getsize(new_fn):
-                continue
+            if copy:
+                copyfile(fn,new_fn)
+            else:
+                try:
+                    symlink(fn,new_fn)
+                except:
+                    echo(_bullet('yellow')+" File exists", err=True)
 
-        if copy:
-            copyfile(fn,new_fn)
-        else:
-            try:
-                symlink(fn,new_fn)
-            except:
-                echo(_bullet('yellow')+" File exists")
+            # Report progress
+            mode = "Copied" if copy else "Symlinked"
+            echo(_bullet('green')+" "+mode+" "+_file(fn), err=True)
+            pad = " "*len(mode)
+            echo(pad+"to "+_file(new_fn), err=True)
 
-        # Report progress
-        mode = "Copied" if copy else "Symlinked"
-        echo(_bullet('green')+" "+mode+" "+_file(fn))
-        pad = " "*len(mode)
-        echo(pad+"to "+_file(new_fn))
-
-    echo("Finished collecting figures")
+    echo("Finished collecting figures", err=True)
