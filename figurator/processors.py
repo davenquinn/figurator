@@ -7,22 +7,29 @@ from .captions import load_captions, integrate_captions
 from .text_filters import figure_id_filter
 from .includes import reorder_includes
 
-def collected_filename(fn, collect_dir):
+def collected_filename(cfg, collect_dir, i=None):
     """
     Update filenames to point to files
     collected by the figure-collection
     function
     """
-    fn = path.basename(fn)
-    return path.join(collect_dir, fn)
+    if i is not None:
+        file = cfg['files'][i]
+    else:
+        file = cfg['file']
+    ext = path.splitext(file)[1]
+    name = cfg['id']
+    if i is not None:
+        name += "_"+str(i)
+    return path.join(collect_dir, name+ext)
 
 def update_filenames(spec, outdir):
     for cfg in spec:
         if 'file' in cfg:
-            cfg['file'] = collected_filename(cfg['file'], outdir)
+            cfg['file'] = collected_filename(cfg, outdir)
         if 'files' in cfg:
-            cfg['files'] = [collected_filename(i, outdir)
-                            for i in cfg['files']]
+            cfg['files'] = [collected_filename(cfg, outdir, i)
+                            for fn,i in enumerate(cfg['files'])]
         yield cfg
 
 def write_file(fn, text):

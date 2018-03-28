@@ -46,7 +46,7 @@ def collect_figures(spec, outdir, search_paths=[], copy=False):
 
     for cfg in spec:
         for fn in find_files(cfg, search_paths):
-            new_fn = collected_filename(fn,outdir)
+            new_fn = collected_filename(cfg,outdir)
             if path.isfile(new_fn):
                 if path.getsize(fn) == path.getsize(new_fn):
                     continue
