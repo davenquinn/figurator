@@ -2,6 +2,8 @@ from __future__ import print_function
 from jinja2 import Environment, FileSystemLoader
 from pandas import isnull
 from collections import OrderedDict
+from click import echo, style
+from os.path import abspath
 
 # Filters for pandoc renderer
 
@@ -92,7 +94,9 @@ class TexRenderer(Environment):
             with open(data['file']) as f:
                 data["content"] = f.read()
         except:
-            data["content"] = "Cannot find table file"
+            fn = abspath(data['file'])
+            echo("Cannot find table file "+style(fn, fg='red'), err=True)
+            data["content"] = "Cannot find table file "+fn
         table = self.get_template(template)
         return table.render(**data)
 
