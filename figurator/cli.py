@@ -77,4 +77,21 @@ def expand_refs():
     text = figure_id_filter(stdin.read())
     stdout.write(text)
 
+
+@cli.command(name='echo')
+@template_dir("generic")
+@standard_interface
+@click.argument('defs', type=click.Path)
+@click.argument('id', type=str)
+def echo_item(ctx, defs, includes, id):
+    """
+    A text filter to include inline figures in pandoc markdown
+    Pipe text through this filter then into pandoc
+
+    Also includes filter to expand refs
+    """
+    text = includes[id]
+    stdout.write(text)
+
+
 expand_refs.__doc__ = figure_id_filter.__doc__
