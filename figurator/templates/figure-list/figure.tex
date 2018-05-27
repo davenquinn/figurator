@@ -9,8 +9,7 @@ Figure \ref{fig:<< id >>}
   %\subsection[<< figid() >><#- if title #>: \textit{<< title >>}<#- endif #>~~\small{<< figref() >>}]%
   %{<< figid() >><#- if title #>: \GothamLight\small{<< title >>} \hfill << figref() >><#- endif #>}
 \nopagebreak
-<#- if not two_column #>\begin{multicols}{2}<# endif -#>
-\noindent\centerline{\includegraphics[<< size >>]{<< file >>}}
+\noindent{\includegraphics[<< size >>]{<< file >>}}
 <# if caption -#>
 \nopagebreak
 \captionof{figure}[<<title>>]{<< caption >>}
@@ -27,6 +26,5 @@ Figure \ref{fig:<< id >>}
 \nopagebreak
 \begin{figinfo}<< desc >>\end{figinfo}
 <# endif #>
-<#- if not two_column #>\end{multicols}<# endif -#>
 \end{samepage}
 \pagebreak
