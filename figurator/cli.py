@@ -81,7 +81,7 @@ def expand_refs():
 @cli.command(name='echo')
 @template_dir("generic")
 @standard_interface
-@click.argument('defs', type=click.Path)
+@click.argument('defs', type=click.Path())
 @click.argument('id', type=str)
 def echo_item(ctx, defs, includes, id):
     """
