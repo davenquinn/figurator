@@ -3,7 +3,8 @@ from setuptools import setup, find_packages
 install_requires = [
     'jinja2',
     'pypandoc',
-    'click'
+    'click',
+    'pandas'
     ]
 
 setup(
