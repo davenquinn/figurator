@@ -5,7 +5,7 @@ install_requires = [
     'pypandoc',
     'click',
     'pandas',
-    'yaml'
+    'pyyaml'
     ]
 
 setup(
