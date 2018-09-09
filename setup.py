@@ -4,7 +4,8 @@ install_requires = [
     'jinja2',
     'pypandoc',
     'click',
-    'pandas'
+    'pandas',
+    'yaml'
     ]
 
 setup(
