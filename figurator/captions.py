@@ -34,6 +34,8 @@ def parse_latex(fobj):
                 yield key, val.rstrip()
             key = match.group(1).replace("\\_","_")
             val = ""
+        elif line.startswith("\hypertarget"):
+            continue
         elif not line.isspace():
             val += line
     if key is not None:
