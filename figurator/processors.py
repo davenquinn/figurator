@@ -50,7 +50,7 @@ def load_spec(spec, caption_file=None, pandoc_processor=None):
     """
     try:
         with open(spec) as f:
-            spec = yaml.load(f.read())
+            spec = yaml.safe_load(f.read())
     except TypeError:
         pass
 
