@@ -55,6 +55,8 @@ def load_captions(filename):
         return {k:v for k,v in parser(f)}
 
 def integrate_captions(spec, captions):
+    if cfg is None:
+        return
     for cfg in spec:
         id = cfg['id']
         if id in captions:

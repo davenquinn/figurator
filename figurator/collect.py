@@ -43,6 +43,8 @@ def collect_figures(spec, outdir, search_paths=[], copy=False):
     secho("Collecting figures from "+_file(spec), bold=True, err=True, fg='cyan')
 
     spec = load_spec(spec)
+    if spec is None:
+        return
 
     for cfg in spec:
         for fn in find_files(cfg, search_paths):
