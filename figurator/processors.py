@@ -1,6 +1,7 @@
 from __future__ import print_function
 import codecs
 import yaml
+from yaml import CLoader
 from os import path
 from click import pass_context
 from .captions import load_captions, integrate_captions
@@ -50,7 +51,7 @@ def load_spec(spec, caption_file=None, pandoc_processor=None):
     """
     try:
         with open(spec) as f:
-            spec = yaml.load(f.read())
+            spec = yaml.load(f.read(), loader=CLoader)
     except TypeError:
         pass
 
@@ -164,4 +165,3 @@ def process_includes(ctx, spec, **kwargs):
         i += 1
         cfg['n'] = i
         yield cfg["id"], method(cfg)
-
