@@ -1,11 +1,13 @@
 from __future__ import print_function
 import codecs
 import yaml
+from yaml import CLoader
 from os import path
 from click import pass_context
 from .captions import load_captions, integrate_captions
 from .text_filters import figure_id_filter
 from .includes import reorder_includes
+
 
 def collected_filename(cfg, collect_dir, i=None):
     """
@@ -14,27 +16,31 @@ def collected_filename(cfg, collect_dir, i=None):
     function
     """
     if i is not None:
-        file = cfg['files'][i]
+        file = cfg["files"][i]
     else:
-        file = cfg['file']
+        file = cfg["file"]
     ext = path.splitext(file)[1]
-    name = cfg['id']
+    name = cfg["id"]
     if i is not None:
-        name += "_"+str(i)
-    return path.join(collect_dir, name+ext)
+        name += "_" + str(i)
+    return path.join(collect_dir, name + ext)
+
 
 def update_filenames(spec, outdir):
     for cfg in spec:
-        if 'file' in cfg:
-            cfg['file'] = collected_filename(cfg, outdir)
-        if 'files' in cfg:
-            cfg['files'] = [collected_filename(cfg, outdir, i)
-                            for fn,i in enumerate(cfg['files'])]
+        if "file" in cfg:
+            cfg["file"] = collected_filename(cfg, outdir)
+        if "files" in cfg:
+            cfg["files"] = [
+                collected_filename(cfg, outdir, i) for fn, i in enumerate(cfg["files"])
+            ]
         yield cfg
 
+
 def write_file(fn, text):
-    with codecs.open(fn,"w",encoding="utf8") as f:
+    with codecs.open(fn, "w", encoding="utf8") as f:
         f.write(text)
+
 
 def load_spec(spec, caption_file=None, pandoc_processor=None):
     """
@@ -60,6 +66,7 @@ def load_spec(spec, caption_file=None, pandoc_processor=None):
 
     return spec
 
+
 def update_defaults(item, **kwargs):
     """
     Updates passed configuration for figures and
@@ -70,12 +77,12 @@ def update_defaults(item, **kwargs):
     __ = dict(
         # Width and scale are used to develop
         # the size
-        width='20pc',
+        width="20pc",
         scale=None,
         # If size is present, it takes precedence over
         # width and scale.
         size=None,
-        type='figure',
+        type="figure",
         two_column=False,
         textwidth=False,
         sideways=False,
@@ -85,30 +92,32 @@ def update_defaults(item, **kwargs):
         # If we check whether figure is referenced, we
         # can flag unused figures as such
         referenced=True,
-        enabled=True)
+        enabled=True,
+    )
 
     __.update(**item)
 
     __["env"] = __["type"]
 
-    if __['two_column'] or __['textwidth']:
-        __['width'] = '\\textwidth'
+    if __["two_column"] or __["textwidth"]:
+        __["width"] = "\\textwidth"
 
     # Add stars to two_column floats
     # `True` by default
     # (this is useful for two-column layouts)
-    if kwargs.pop("starred_floats",True):
+    if kwargs.pop("starred_floats", True):
         if __["two_column"]:
             __["env"] += "*"
 
-    if __.get('size') is None:
-        size = "width={}".format(__['width'])
-        scale = __.get('scale')
+    if __.get("size") is None:
+        size = "width={}".format(__["width"])
+        scale = __.get("scale")
         if scale is not None:
             size += ",scale={}".format(scale)
-        __['size'] = size
+        __["size"] = size
 
     return __
+
 
 ### Process includes ###
 @pass_context
@@ -120,32 +129,30 @@ def process_includes(ctx, spec, **kwargs):
     """
     # Load spec if we haven't already
 
-    captions_file = kwargs.pop('captions', None)
+    captions_file = kwargs.pop("captions", None)
     if captions_file is not None:
-        captions_are_markdown = path.splitext(captions_file)[1] == '.md'
+        captions_are_markdown = path.splitext(captions_file)[1] == ".md"
     else:
         captions_are_markdown = True
 
-    spec = load_spec(spec,
-        caption_file=captions_file)
+    spec = load_spec(spec, caption_file=captions_file)
     # We modify filenames if invoked with `collect_dir`
-    collect_dir = kwargs.pop('collect_dir',None)
+    collect_dir = kwargs.pop("collect_dir", None)
     if collect_dir is not None:
         spec = update_filenames(spec, collect_dir)
 
-    spec = [update_defaults(item, **kwargs)
-            for item in spec]
+    spec = [update_defaults(item, **kwargs) for item in spec]
 
     # Apply figure order if set
-    order_by = kwargs.pop('order_by', None)
+    order_by = kwargs.pop("order_by", None)
     if order_by is not None:
         spec = reorder_includes(order_by, spec)
 
     # No way to turn this off in the cli yet
-    ignore_disabled = kwargs.pop('ignore_disabled', True)
-    i = 0 # Figure counter
+    ignore_disabled = kwargs.pop("ignore_disabled", True)
+    i = 0  # Figure counter
     for cfg in spec:
-        if ignore_disabled and not cfg['enabled']:
+        if ignore_disabled and not cfg["enabled"]:
             continue
 
         def process_text_field(id):
@@ -153,15 +160,14 @@ def process_includes(ctx, spec, **kwargs):
                 cfg[id] = ctx.pandoc_processor(cfg[id])
 
         # Process caption
-        #if captions_are_markdown:
+        # if captions_are_markdown:
         #    process_text_field('caption')
-        process_text_field('desc')
+        process_text_field("desc")
 
-        method = getattr(ctx.tex_renderer,"make_"+cfg['type'])
+        method = getattr(ctx.tex_renderer, "make_" + cfg["type"])
         # Get rid of disabled figures
-        if not cfg['enabled']:
+        if not cfg["enabled"]:
             continue
         i += 1
-        cfg['n'] = i
+        cfg["n"] = i
         yield cfg["id"], method(cfg)
-
