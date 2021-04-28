@@ -1,6 +1,7 @@
 from __future__ import print_function
 from os import path
 from re import compile
+from click import echo
 
 def parse_markdown(fobj):
     """
@@ -58,7 +59,11 @@ def integrate_captions(spec, captions):
     if spec is None:
         return
     for cfg in spec:
-        id = cfg['id']
+        try:
+            id = cfg['id']
+        except TypeError:
+            echo(f"Error integrating caption {cfg}", err=True)
+            continue
         if id in captions:
             cfg['caption'] = captions[id]
         yield cfg

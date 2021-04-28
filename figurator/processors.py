@@ -1,12 +1,12 @@
 from __future__ import print_function
 import codecs
 import yaml
-from yaml import CLoader
 from os import path
-from click import pass_context
+from click import pass_context, secho
 from .captions import load_captions, integrate_captions
 from .text_filters import figure_id_filter
 from .includes import reorder_includes
+from collections.abc import Sequence
 
 
 def collected_filename(cfg, collect_dir, i=None):
@@ -41,8 +41,7 @@ def write_file(fn, text):
     with codecs.open(fn, "w", encoding="utf8") as f:
         f.write(text)
 
-
-def load_spec(spec, caption_file=None, pandoc_processor=None):
+def load_spec(spec_file, caption_file=None, pandoc_processor=None):
     """
     Load spec from YAML or simply pass it through
     unaltered if it is already a list of mappings
@@ -54,11 +53,15 @@ def load_spec(spec, caption_file=None, pandoc_processor=None):
                 with section headers titled with the figure id, e.g
                 #afig-id
     """
-    try:
-        with open(spec) as f:
-            spec = yaml.safe_load(f.read())
-    except TypeError:
-        pass
+    if isinstance(spec_file, Sequence) and not isinstance(spec_file, str):
+        spec = spec_file
+    else:
+        try:
+            with open(spec_file) as f:
+                spec = yaml.safe_load(f.read())
+        except TypeError as err:
+            secho(str(err), err=True, fg="red")
+            raise err
 
     if caption_file is not None:
         captions = load_captions(caption_file)
