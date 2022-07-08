@@ -1,6 +1,6 @@
 from click import argument, option, pass_context, Path, File
 from functools import update_wrapper, partial
-from pypandoc import convert
+from pypandoc import convert_text
 from .tex_renderer import TexRenderer
 from .processors import load_spec, process_includes
 
@@ -9,7 +9,7 @@ _path = Path(exists=True)
 def pandoc_processor(text, citation_backend=None, extra_args=[]):
     if citation_backend is not None:
         extra_args.append("--"+citation_backend)
-    return convert(text, 'latex', format='md',
+    return convert_text(text, 'latex', format='md',
         extra_args=extra_args)
 
 def standard_interface(f):
