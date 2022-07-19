@@ -32,6 +32,12 @@ def resolve_figures(spec, search_paths=[]):
         for f in find_files(cfg, search_paths):
             yield f
 
+def relative_symlink(src, dst):
+    dir_ = path.dirname(dst)
+    src1 = path.relpath(src, dir_)
+    dst1 = path.join(dir_, path.basename(src1))
+    return symlink(src1, dst1)
+
 def collect_figures(spec, outdir, search_paths=[], copy=False):
     """
     Collects figures into a specific directory
@@ -58,7 +64,7 @@ def collect_figures(spec, outdir, search_paths=[], copy=False):
                 copyfile(fn,new_fn)
             else:
                 try:
-                    symlink(fn,new_fn)
+                    relative_symlink(fn, new_fn)
                 except:
                     echo(_bullet('yellow')+" File exists", err=True)
 
