@@ -1,16 +1,29 @@
 from __future__ import print_function
 from jinja2 import Environment, FileSystemLoader
-from pandas import isnull
 from collections import OrderedDict
 from click import echo, style
 from os.path import abspath
 
 # Filters for pandoc renderer
 
-def nominal(value,rounding=2):
+
+def isnull(value):
+    """Instead of using Pandas isnull, we use our own"""
+    if value is None:
+        return True
+    if isinstance(value, str):
+        return value == ""
+    if isinstance(value, (list, tuple)):
+        return len(value) == 0
+    if isinstance(value, dict):
+        return len(value) == 0
+    return False
+
+
+def nominal(value, rounding=2):
     if isnull(value):
-        return '--'
-    fs = "{0:."+str(rounding)+"f}"
+        return "--"
+    fs = "{0:." + str(rounding) + "f}"
     try:
         return fs.format(value.n)
     except AttributeError:
@@ -18,36 +31,41 @@ def nominal(value,rounding=2):
     except TypeError:
         return fs.format(value)
 
-def uncertain(value,rounding=2):
-    fs = "{0:."+str(rounding)+"f}"
-    d = tuple(fs.format(i)\
-        for i in (value.n, value.s))
+
+def uncertain(value, rounding=2):
+    fs = "{0:." + str(rounding) + "f}"
+    d = tuple(fs.format(i) for i in (value.n, value.s))
     try:
         return "$\pm$".join(d)
     except AttributeError:
         return value
 
-def escape(value):
-    return value.replace('_','{\_}')
 
-def uncertain_parenthetical(value,rounding=2):
-    fstring = "{0:."+str(rounding)+"uS}"
+def escape(value):
+    return value.replace("_", "{\_}")
+
+
+def uncertain_parenthetical(value, rounding=2):
+    fstring = "{0:." + str(rounding) + "uS}"
     try:
         s = fstring.format(value)
     except ValueError:
-        s = str(value)+"()"
-    return s.replace("(","~(")
+        s = str(value) + "()"
+    return s.replace("(", "~(")
 
-def filter_by_fstring(value,fstring="{}"):
+
+def filter_by_fstring(value, fstring="{}"):
     tries = [
         lambda x: fstring.format(x),
         lambda x: fstring.format(*x),
-        lambda x: fstring.format(**x)]
+        lambda x: fstring.format(**x),
+    ]
     for fn in tries:
         try:
             return fn(value)
         except:
             pass
+
 
 # Load file from local templates directory before
 # resorting to module's templates directory
@@ -56,15 +74,17 @@ def filter_by_fstring(value,fstring="{}"):
 class TexRenderer(Environment):
     def __init__(self, *template_dirs):
         dirs = list(template_dirs)
-        dirs += ['templates']
-        Environment.__init__(self,
-            block_start_string = '<#',
-            block_end_string = '#>',
-            variable_start_string = '<<',
-            variable_end_string = '>>',
-            comment_start_string = '<=',
-            comment_end_string = '=>',
-            loader = FileSystemLoader(dirs))
+        dirs += ["templates"]
+        Environment.__init__(
+            self,
+            block_start_string="<#",
+            block_end_string="#>",
+            variable_start_string="<<",
+            variable_end_string=">>",
+            comment_start_string="<=",
+            comment_end_string="=>",
+            loader=FileSystemLoader(dirs),
+        )
 
         self.filters["f"] = filter_by_fstring
         self.filters["un"] = uncertain
@@ -74,29 +94,28 @@ class TexRenderer(Environment):
 
     def make_figure(self, data, template="figure.tex"):
         # allow overriding of template from figure defs
-        tmp = data.pop('template',None)
+        tmp = data.pop("template", None)
         if tmp is not None:
-            template = tmp+'.tex'
+            template = tmp + ".tex"
 
         fig = self.get_template(template)
         return fig.render(**data)
 
     def make_table(self, data, template="table.tex"):
         # Add table notes if defined
-        if 'notes' in data:
+        if "notes" in data:
             data["notes"] = OrderedDict(sorted(data["notes"].items()))
-        tmp = data.pop('template',None)
+        tmp = data.pop("template", None)
         if tmp is not None:
-            template = tmp+'.tex'
+            template = tmp + ".tex"
 
         # Get LaTeX document that holds table body
         try:
-            with open(data['file']) as f:
+            with open(data["file"]) as f:
                 data["content"] = f.read()
         except:
-            fn = abspath(data['file'])
-            echo("Cannot find table file "+style(fn, fg='red'), err=True)
-            data["content"] = "Cannot find table file "+fn
+            fn = abspath(data["file"])
+            echo("Cannot find table file " + style(fn, fg="red"), err=True)
+            data["content"] = "Cannot find table file " + fn
         table = self.get_template(template)
         return table.render(**data)
-

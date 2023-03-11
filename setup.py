@@ -1,16 +1,10 @@
 from setuptools import setup, find_packages
 
-install_requires = [
-    'jinja2',
-    'pypandoc',
-    'click',
-    'pandas',
-    'pyyaml'
-    ]
+install_requires = ["jinja2", "pypandoc", "click", "pyyaml"]
 
 setup(
     name="figurator",
-    version="0.1",
+    version="0.2",
     long_description=__doc__,
     packages=find_packages(),
     install_requires=install_requires,
@@ -19,5 +13,5 @@ setup(
     entry_points="""
         [console_scripts]
         figurator=figurator.cli:cli
-    """
+    """,
 )
