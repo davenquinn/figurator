@@ -1,8 +1,10 @@
 from __future__ import print_function
-from jinja2 import Environment, FileSystemLoader
+
 from collections import OrderedDict
-from click import echo, style
 from os.path import abspath
+
+from click import echo, style
+from jinja2 import Environment, FileSystemLoader
 
 # Filters for pandoc renderer
 
@@ -109,12 +111,16 @@ class TexRenderer(Environment):
         if tmp is not None:
             template = tmp + ".tex"
 
+        fn = abspath(data["file"])
+        if fn.endswith(".pdf"):
+            tbl = self.get_template("pdf-table.tex")
+            return tbl.render(**data)
+
         # Get LaTeX document that holds table body
         try:
-            with open(data["file"]) as f:
+            with open(fn) as f:
                 data["content"] = f.read()
         except:
-            fn = abspath(data["file"])
             echo("Cannot find table file " + style(fn, fg="red"), err=True)
             data["content"] = "Cannot find table file " + fn
         table = self.get_template(template)
