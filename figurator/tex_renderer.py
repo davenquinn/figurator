@@ -112,6 +112,17 @@ class TexRenderer(Environment):
             template = tmp + ".tex"
 
         fn = abspath(data["file"])
+
+        # If the file is xlsx, substitute PDF
+        if fn.endswith(".xlsx"):
+            # Print a warning for this temporary workaround
+            echo(
+                "Warning: assuming that a PDF version of the XLSX table is available (temporary workaround)",
+                err=True,
+            )
+            fn = fn.replace(".xlsx", ".pdf")
+            data["file"] = fn
+
         if fn.endswith(".pdf"):
             tbl = self.get_template("pdf-table.tex")
             return tbl.render(**data)
