@@ -167,7 +167,14 @@ def process_includes(ctx, spec, **kwargs):
         #    process_text_field('caption')
         process_text_field("desc")
 
-        method = getattr(ctx.tex_renderer, "make_" + cfg["type"])
+        method = getattr(ctx.tex_renderer, "make_" + cfg["type"], None)
+        if method is None:
+            secho(
+                "No method found for type {}. Skipping.".format(cfg["type"]),
+                err=True,
+                fg="red"
+            )
+            continue
         # Get rid of disabled figures
         if not cfg["enabled"]:
             continue
